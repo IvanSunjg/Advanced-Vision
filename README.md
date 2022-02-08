@@ -9,7 +9,10 @@ from google.colab import drive
 drive.mount("/content/gdrive")
 ```
 ## Unzip train.zip to colab
+* In a separate cell insert
 ```
 !cd /content/data/
 ! unzip /content/gdrive/MyDrive/train.zip
 ```
+## Start training
+* In a separate cell copy baseline_model_colab.py code
