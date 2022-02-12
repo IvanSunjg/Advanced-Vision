@@ -1,12 +1,18 @@
-# General setup for google colab
-* Download train.zip to google drive
-* Download resnet50_fconv_model_best.pth.tar to google drive
-## Mount google drive to colab
-* In colab choose **Runtime->Change runtime type->GPU**
-* In a cell insert the code below and run
+# General setup for MLPcluster
+* install uni vpn
+* follow tutorial to access cluster and setup MLP cluster environment and read instructions what is slurm
+## Download dataset
 ```
-from google.colab import drive
-drive.mount("/content/gdrive")
+cd
+mkdir AVcw
+cd AVcw
+chmod +x dw_trainzip.sh 
+chmod +x dw_resnet.sh
+./dw_trainzip.sh 
+./dw_resnet.sh
+! unzip train.zip
+source .bashrc
+conda install scikit-learn
 ```
 ## Unzip train.zip to colab
 * In a separate cell insert the code below and run
