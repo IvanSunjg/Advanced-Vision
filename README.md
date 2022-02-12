@@ -1,7 +1,7 @@
 # General setup for MLPcluster
 * install uni vpn
 * follow tutorial to access cluster and setup MLP cluster environment and read instructions what is slurm
-## Download dataset
+## Download dataset and missing package from mlp
 ```
 cd
 mkdir AVcw
@@ -12,13 +12,13 @@ chmod +x dw_resnet.sh
 ./dw_resnet.sh
 ! unzip train.zip
 source .bashrc
+conda activate mlp
 conda install scikit-learn
 ```
-## Unzip train.zip to colab
-* In a separate cell insert the code below and run
+## Submit job
+
 ```
-!cd /content/data/
-! unzip /content/gdrive/MyDrive/train.zip
+sbatch model.sh
+
 ```
-## Start training
-* In a separate cell copy baseline_model_colab.py code and run
+
