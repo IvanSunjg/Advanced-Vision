@@ -12,12 +12,12 @@
 * Config git ```git config --global user.name "[your name]"; git config --global user.email "[matric-number]@sms.ed.ac.uk"```
 * Clone our repo ```git clone ghttps://github.com/IvanSunjg/Advanced-Vision.git```
 * cd ```Advanced-Vision```
-* Run ```bash install.sh```
+* Run ```bash install.sh``` to install required packages
 ## Download dataset and resnet50 checkpoint
 * Stay in Advanced-Vision and run ```bash download.sh```
 * This will download everything from my google drive unzip it and then delete zip file
 ## Submit job
 * Run ```sbatch send_model_to_job.sh```
 * Now you will see a job id then ```nano [id].out``` to see the output
-```
+
 
