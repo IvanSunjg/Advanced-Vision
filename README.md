@@ -10,24 +10,14 @@
 * Run ```source activate mlp``` then ```conda activate mlp```
 * Install git ```conda install git```
 * Config git ```git config --global user.name "[your name]"; git config --global user.email "[matric-number]@sms.ed.ac.uk"```
-* Clone our repo 
-```
-cd
-mkdir AVcw
-cd AVcw
-chmod +x dw_trainzip.sh 
-chmod +x dw_resnet.sh
-./dw_trainzip.sh 
-./dw_resnet.sh
-! unzip train.zip
-source .bashrc
-conda activate mlp
-conda install scikit-learn
-```
+* Clone our repo ```git clone ghttps://github.com/IvanSunjg/Advanced-Vision.git```
+* cd ```Advanced-Vision```
+* Run ```bash install.sh```
+## Download dataset and resnet50 checkpoint
+* Stay in Advanced-Vision and run ```bash download.sh```
+* This will download everything from my google drive unzip it and then delete zip file
 ## Submit job
-
-```
-sbatch model.sh
-
+* Run ```sbatch send_model_to_job.sh```
+* Now you will see a job id then ```nano [id].out``` to see the output
 ```
 
