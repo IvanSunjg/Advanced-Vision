@@ -15,7 +15,7 @@
 * Checkout MLPcluster branch ```git checkout MLPcluster```
 * Run ```bash install.sh``` to install required packages
 ## Download dataset and resnet50 checkpoint
-* Stay in Advanced-Vision and run ```bash download.sh```
+* Run ```bash download.sh```
 * This will download everything from my google drive unzip it and then delete zip file
 ## Submit job
 * Script takes care of path so don't need to modify anything
