@@ -5,7 +5,7 @@
 ## Setup environment
 * Start by downloading the miniconda3 installation file using ```wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh```
 * Now run the installation using ```bash Miniconda3-latest-Linux-x86_64.sh```
-* Activate environment ```source activate``` 
+* Activate environment ```source .bashrc``` and ```source activate``` 
 * Create environment  ```conda create -n mlp python=3.8```
 * Run ```source activate mlp``` then ```conda activate mlp```
 * Install git ```conda install git```
