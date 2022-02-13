@@ -1,6 +1,6 @@
 # General setup for MLPcluster
 * Install university vpn[https://computing.help.inf.ed.ac.uk/openvpn]
-* ssh into your dice ssh ```sxxxxxx@student.ssh.inf.ed.ac.uk```
+* ssh into your dice ```ssh sxxxxxx@student.ssh.inf.ed.ac.uk```
 * ssh into MLP cluster ```ssh mlp1```
 ## Setup environment
 * Start by downloading the miniconda3 installation file using ```wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh```
