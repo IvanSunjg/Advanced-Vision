@@ -201,7 +201,7 @@ for child in model.children():
 	print(child)
 '''
 # hyperparameters 
-#these give the best result so far 50%
+#these give the best result so far 35%
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.006, weight_decay=0.006)
 step_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=6, gamma=0.1)
