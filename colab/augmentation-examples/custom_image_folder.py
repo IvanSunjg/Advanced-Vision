@@ -18,45 +18,4 @@ class CustomImageFolder(ImageFolder):
     def update_transform(self, epoch):
         if epoch in self.epoch_transforms:
             self.transform = self.epoch_transforms[epoch]
-
-
-class Double():
-
-    def __init__(self, spread=50):
-        self.spread = spread
-
-    def __call__(self, img):
-        img1 = img.transform(img.size, Image.AFFINE, (1, 0, self.spread / 2, 0, 1, 0))
-        img2 = img.transform(img.size, Image.AFFINE, (1, 0, -self.spread / 2, 0, 1, 0))
-        return Image.blend(img1, img2, 0.5)
-
-
-class CutOut():
-
-    def __init__(self, size=(50, 50)):
-        self.size = size
-    
-    def __call__(self, img):
-        # cutout square
-        np.random()
-        pass
-
-
-def onehot(label, n_classes):
-    return torch.zeros(label.size(0), n_classes).scatter_(
-        1, label.view(-1, 1), 1)
-
-
-def mixup(data, targets, alpha, n_classes):
-    indices = torch.randperm(data.size(0))
-    data2 = data[indices]
-    targets2 = targets[indices]
-
-    targets = onehot(targets, n_classes)
-    targets2 = onehot(targets2, n_classes)
-
-    lam = torch.FloatTensor([np.random.beta(alpha, alpha)])
-    data = data * lam + data2 * (1 - lam)
-    targets = targets * lam + targets2 * (1 - lam)
-
-    return data, targets
+            
