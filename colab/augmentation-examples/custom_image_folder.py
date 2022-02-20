@@ -19,4 +19,4 @@ class CustomImageFolder(ImageFolder):
     def update_transform(self, epoch):
         if epoch in self.epoch_transforms:
             self.transform = self.epoch_transforms[epoch]
-
+            
