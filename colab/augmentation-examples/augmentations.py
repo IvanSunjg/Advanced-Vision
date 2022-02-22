@@ -1,15 +1,7 @@
-import os
-from re import S
-
-from inflection import dasherize
 import torch
 import numpy as np
-import matplotlib.pyplot as plt
-from torchvision import transforms, utils
-from torchvision.datasets import ImageFolder
-from torch.utils.data import Subset
-from torchvision.transforms import Compose, ToTensor, Resize
-from torch.utils.data import DataLoader
+from torchvision import transforms
+import torch.nn.functional as F
 from PIL import Image
 import random
 
@@ -25,7 +17,7 @@ class Double():
         return Image.blend(img1, img2, 0.5)
 
 
-class CutOut(object):
+class CutOut():
 
     """
     Randomly mask out one or more patches from an image.
@@ -69,7 +61,7 @@ class CutOut(object):
 
         return img
 
-class Gridmask(object):
+class Gridmask():
 
     def __init__(self):
 
@@ -162,7 +154,7 @@ def augmix(img,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
 
 
 
-class AugMix(object):
+class AugMix():
     '''
     @article{hendrycks2020augmix,
     title={{AugMix}: A Simple Data Processing Method to Improve Robustness and Uncertainty},
@@ -176,7 +168,7 @@ class AugMix(object):
     m: weight for mix with the original and the mixup augumentated image
     '''
 
-    def __init__(self,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
+    def __init__(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
         self.k = k
         self.w1 = w1
         self.w2 = w2
@@ -207,34 +199,28 @@ class AugMix(object):
 
             elif selects[i] == "rotate":
                 # small rotation degree in order to keep the image not to be destroyed 
-                new_image = transforms.functional.rotate(img, random.randint(-20,20))
+                new_image = transforms.functional.rotate(img, random.randint(-20, 20))
                 images.append(new_image)
             
             elif selects[i] == "translate_x":
-                new_image = transforms.functional.affine(img, translate=(random.uniform(-100,100),0),angle=0, scale = 1,shear = 0)
+                new_image = transforms.functional.affine(img, translate=(random.uniform(-100, 100), 0), angle=0, scale = 1, shear = 0)
                 images.append(new_image)
 
             elif selects[i] == "translate_y":
-                new_image = transforms.functional.affine(img, translate=(0,random.uniform(-100,100)),angle=0, scale = 1,shear = 0)
+                new_image = transforms.functional.affine(img, translate=(0, random.uniform(-100, 100)), angle=0, scale = 1, shear = 0)
                 images.append(new_image)
 
-        mixed = torch.mul(images[0],self.w1) + torch.mul(images[1],self.w2) + torch.mul(images[2],self.w3)
-        miximg = torch.mul(mixed,1-self.m) + torch.mul(img,self.m)
+        mixed = torch.mul(images[0], self.w1) + torch.mul(images[1], self.w2) + torch.mul(images[2], self.w3)
+        miximg = torch.mul(mixed, 1 - self.m) + torch.mul(img, self.m)
 
         return miximg
 
 
-
-
-
-
 def onehot(label, n_classes):
-    return torch.zeros(label.size(0), n_classes).scatter_(
-        1, label.view(-1, 1), 1)
+    return torch.zeros(label.size(0), n_classes).scatter_(1, label.view(-1, 1), 1)
 
 
 def mixup(data, targets, alpha, n_classes):
-
     '''
     alpha: input parameter for beta distribution to calculate opacities of mixup (lambda)
     '''
@@ -251,3 +237,20 @@ def mixup(data, targets, alpha, n_classes):
     targets = targets * lam + targets2 * (1 - lam)
 
     return data, targets
+
+
+def cross_entropy_loss(data, target, size_average=True):
+    data = F.log_softmax(data, dim =1)
+    loss = -torch.sum(data * target)
+    if size_average:
+        return loss / data.size(0)
+    else:
+        return loss
+
+
+class CrossEntropyLoss():
+    def __init__(self, size_average=True):
+        self.size_average = size_average
+
+    def __call__(self, data, target):
+        return cross_entropy_loss(data, target, self.size_average)
