@@ -113,6 +113,7 @@ class Gridmask(object):
         return img
 
 
+## for checking the output
 def augmix(img,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
     '''
     @article{hendrycks2020augmix,
@@ -127,7 +128,7 @@ def augmix(img,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
     m: weight for mix with the original and the mixup augumentated image
     '''
 
-    augulist = ["hflip", "zflip", "rotate", "translate_x", "translate_y"]
+    augulist = ["hflip", "vflip", "rotate", "translate_x", "translate_y"]
     selects = random.sample(augulist, k)
     images = []
     for i in range(len(selects)):
@@ -152,7 +153,7 @@ def augmix(img,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
         elif selects[i] == "translate_y":
             new_image = transforms.functional.affine(img, translate=(0,random.uniform(-100,100)),angle=0, scale = 1,shear = 0)
             images.append(new_image)
-
+    
     mixed = torch.mul(images[0],w1) + torch.mul(images[1],w2) + torch.mul(images[2],w3)
     miximg = torch.mul(mixed,1-m) + torch.mul(img,m)
     
@@ -189,7 +190,8 @@ class AugMix(object):
             img (Tensor): Tensor image of size (C, H, W)
         """
 
-        augulist = ["hflip", "zflip", "rotate", "translate_x", "translate_y"]
+        ## could modify different augmentation method' hyperparameters
+        augulist = ["hflip", "vflip", "rotate", "translate_x", "translate_y"]
         selects = random.sample(augulist, self.k)
         images = []
 
@@ -197,34 +199,27 @@ class AugMix(object):
 
             if selects[i] == "hflip":
                 new_image = transforms.functional.hflip(img)
-                new_image = transforms.functional.to_tensor(new_image)
                 images.append(new_image)
 
             elif selects[i] == "vflip":
                 new_image = transforms.functional.vflip(img)
-                new_image = transforms.functional.to_tensor(new_image)
                 images.append(new_image)
 
             elif selects[i] == "rotate":
                 # small rotation degree in order to keep the image not to be destroyed 
                 new_image = transforms.functional.rotate(img, random.randint(-20,20))
-                new_image = transforms.functional.to_tensor(new_image)
                 images.append(new_image)
             
             elif selects[i] == "translate_x":
                 new_image = transforms.functional.affine(img, translate=(random.uniform(-100,100),0),angle=0, scale = 1,shear = 0)
-                new_image = transforms.functional.to_tensor(new_image)
                 images.append(new_image)
 
             elif selects[i] == "translate_y":
                 new_image = transforms.functional.affine(img, translate=(0,random.uniform(-100,100)),angle=0, scale = 1,shear = 0)
-                new_image = transforms.functional.to_tensor(new_image)
                 images.append(new_image)
 
-        mixed = self.w1 * images[0] + self.w2 * images[1] + self.w3 * images[2]
-        miximg = (1-self.m) * mixed + self.m * transforms.functional.to_tensor(img) 
-
-
+        mixed = torch.mul(images[0],self.w1) + torch.mul(images[1],self.w2) + torch.mul(images[2],self.w3)
+        miximg = torch.mul(mixed,1-self.m) + torch.mul(img,self.m)
 
         return miximg
 
