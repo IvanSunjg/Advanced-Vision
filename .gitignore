@@ -1,3 +1,4 @@
 .DS_Store
 **/train_sub/*/*
+**/slurm_out/*.out
 __pycache__
