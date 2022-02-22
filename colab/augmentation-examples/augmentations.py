@@ -1,4 +1,7 @@
 import os
+from re import S
+
+from inflection import dasherize
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,6 +11,7 @@ from torch.utils.data import Subset
 from torchvision.transforms import Compose, ToTensor, Resize
 from torch.utils.data import DataLoader
 from PIL import Image
+import random
 
 
 class Double():
@@ -107,6 +111,126 @@ class Gridmask(object):
         img = img * mask
 
         return img
+
+
+def augmix(img,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
+    '''
+    @article{hendrycks2020augmix,
+    title={{AugMix}: A Simple Data Processing Method to Improve Robustness and Uncertainty},
+    author={Hendrycks, Dan and Mu, Norman and Cubuk, Ekin D. and Zoph, Barret and Gilmer, Justin and Lakshminarayanan, Balaji},
+    journal={Proceedings of the International Conference on Learning Representations (ICLR)},
+    year={2020}
+    }
+
+    k: number of different augumentations taken (default 3)
+    w1,w2,w3: weight for each augumentated image to mixup
+    m: weight for mix with the original and the mixup augumentated image
+    '''
+
+    augulist = ["hflip", "zflip", "rotate", "translate_x", "translate_y"]
+    selects = random.sample(augulist, k)
+    images = []
+    for i in range(len(selects)):
+
+        if selects[i] == "hflip":
+            new_image = transforms.functional.hflip(img)
+            images.append(new_image)
+
+        elif selects[i] == "vflip":
+            new_image = transforms.functional.vflip(img)
+            images.append(new_image)
+
+        elif selects[i] == "rotate":
+            # small rotation degree in order to keep the image not to be destroyed 
+            new_image = transforms.functional.rotate(img, random.randint(-20,20))
+            images.append(new_image)
+            
+        elif selects[i] == "translate_x":
+            new_image = transforms.functional.affine(img, translate=(random.uniform(-100,100),0),angle=0, scale = 1,shear = 0)
+            images.append(new_image)
+
+        elif selects[i] == "translate_y":
+            new_image = transforms.functional.affine(img, translate=(0,random.uniform(-100,100)),angle=0, scale = 1,shear = 0)
+            images.append(new_image)
+
+    mixed = torch.mul(images[0],w1) + torch.mul(images[1],w2) + torch.mul(images[2],w3)
+    miximg = torch.mul(mixed,1-m) + torch.mul(img,m)
+    
+    
+    return mixed, miximg, images[0],images[1],images[2]
+
+
+
+class AugMix(object):
+    '''
+    @article{hendrycks2020augmix,
+    title={{AugMix}: A Simple Data Processing Method to Improve Robustness and Uncertainty},
+    author={Hendrycks, Dan and Mu, Norman and Cubuk, Ekin D. and Zoph, Barret and Gilmer, Justin and Lakshminarayanan, Balaji},
+    journal={Proceedings of the International Conference on Learning Representations (ICLR)},
+    year={2020}
+    }
+
+    k: number of different augumentations taken (default 3)
+    w1,w2,w3: weight for each augumentated image to mixup
+    m: weight for mix with the original and the mixup augumentated image
+    '''
+
+    def __init__(self,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
+        self.k = k
+        self.w1 = w1
+        self.w2 = w2
+        self.w3 = w3
+        self.m = m
+
+    def __call__(self, img):
+
+        """
+        Args:
+            img (Tensor): Tensor image of size (C, H, W)
+        """
+
+        augulist = ["hflip", "zflip", "rotate", "translate_x", "translate_y"]
+        selects = random.sample(augulist, self.k)
+        images = []
+
+        for i in range(len(selects)):
+
+            if selects[i] == "hflip":
+                new_image = transforms.functional.hflip(img)
+                new_image = transforms.functional.to_tensor(new_image)
+                images.append(new_image)
+
+            elif selects[i] == "vflip":
+                new_image = transforms.functional.vflip(img)
+                new_image = transforms.functional.to_tensor(new_image)
+                images.append(new_image)
+
+            elif selects[i] == "rotate":
+                # small rotation degree in order to keep the image not to be destroyed 
+                new_image = transforms.functional.rotate(img, random.randint(-20,20))
+                new_image = transforms.functional.to_tensor(new_image)
+                images.append(new_image)
+            
+            elif selects[i] == "translate_x":
+                new_image = transforms.functional.affine(img, translate=(random.uniform(-100,100),0),angle=0, scale = 1,shear = 0)
+                new_image = transforms.functional.to_tensor(new_image)
+                images.append(new_image)
+
+            elif selects[i] == "translate_y":
+                new_image = transforms.functional.affine(img, translate=(0,random.uniform(-100,100)),angle=0, scale = 1,shear = 0)
+                new_image = transforms.functional.to_tensor(new_image)
+                images.append(new_image)
+
+        mixed = self.w1 * images[0] + self.w2 * images[1] + self.w3 * images[2]
+        miximg = (1-self.m) * mixed + self.m * transforms.functional.to_tensor(img) 
+
+
+
+        return miximg
+
+
+
+
 
 
 def onehot(label, n_classes):
