@@ -104,6 +104,39 @@ class Gridmask():
 
         return img
 
+class CornerMask():
+
+    """
+    Mask four corners with patches from an image.
+    Args:
+        length (int): The length (in pixels) of each square patch.
+    """
+    def __init__(self,length):
+
+        self.length = length
+
+    def __call__(self, img):
+        """
+        Args:
+            img (Tensor): Tensor image of size (C, H, W).
+        Returns:
+            Tensor: Image with n_holes of dimension length x length cut out of it.
+        """
+        height = img.size(1)
+        width = img.size(2)
+        
+        mask = np.ones((height, width), np.float32)
+
+        mask[: self.length, : self.length] = 0.
+        mask[-self.length: , : self.length] = 0.
+        mask[: self.length, -self.length: ] = 0.
+        mask[-self.length: , -self.length: ] = 0.
+
+        mask = torch.from_numpy(mask)
+        mask = mask.expand_as(img)
+        img = img * mask
+
+        return img
 
 ## for checking the output
 def augmix(img,k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
