@@ -35,5 +35,7 @@ export DATASET_DIR=${TMP}/datasets/
 
 source /home/${STUDENT_ID}/miniconda3/bin/activate mlp
 
-python model.py --path /home/${STUDENT_ID}/Advanced-Vision
+python model.py --path /home/${STUDENT_ID}/Advanced-Vision --num_epochs 15 --optimizer_type 'SGD' --lr 0.006 --weight_decay 0.006 --momentum 0.5 --beta1 0 --beta2 0 --amsgrad False --loss_function 'CEL' --reduction 'mean' --label_smoothing 0.0 --step_size 7 --gamma 0.1 --num_of_frozen_blocks 2 --argument1 3 --argument2 50 
+
+python model.py --path /home/${STUDENT_ID}/Advanced-Vision --num_epochs 15 --optimizer_type 'Adam' --lr 0.006 --weight_decay 0.006 --momentum 0 --beta1 0.9 --beta2 0.999 --amsgrad False --loss_function 'KLD' --reduction 'mean' --label_smoothing 0.0 --step_size 7 --gamma 0.1 --num_of_frozen_blocks 2 --argument1 0 --argument2 0 
 
