@@ -107,8 +107,8 @@ print(len(image_datasets['val']))
 #use custom transforms#
 image_datasets['train'].dataset.update_transform(0)                
 #dataloader shuffles both train and valid!!! image_datasets
-dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=2,
-                                             shuffle=True, num_workers=0)
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=64,
+                                             shuffle=True, num_workers=1)
               for x in ['train','val']}
               
 #full dataset needed for training              
@@ -206,7 +206,7 @@ model = models.resnet50(pretrained=False)
 #load checkpoint
 #FILE = "/media/gabriel/24C755C11481A4EA/resnet50_fconv_model_best.pth.tar"
 FILE = path+"/resnet50_fconv_model_best.pth.tar"
-checkpoint = torch.load(FILE,map_location=torch.device('cpu'))
+checkpoint = torch.load(FILE)
 #froze blocks
 ct = 0
 for child in model.children():
