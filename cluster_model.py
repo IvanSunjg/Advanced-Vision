@@ -20,7 +20,6 @@ from torchvision.transforms import Compose, ToTensor, Resize
 from torch.utils.data import DataLoader
 from arg_extractor import get_args
 from copy import copy
-import albumentations as A
 
 
 ###command line rguments###
