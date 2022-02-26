@@ -17,13 +17,13 @@ def get_args():
 	###otimizer hyperparameters, so far we used only 'SGD'###
 	#see pytorch documentation for detailed description on hyperparameters
 	#learning rate and weight decay can be used with both 'SGD' and 'Adam'
-	parser.add_argument('--lr', nargs="?", type=int, default=0.006)
-	parser.add_argument('--weight_decay', nargs="?", type=int, default=0.006)
+	parser.add_argument('--lr', nargs="?", type=float, default=0.006)
+	parser.add_argument('--weight_decay', nargs="?", type=float, default=0.006)
 	# momentum can only be used with 'SGD'
-	parser.add_argument('--momentum', nargs="?", type=int, default=0.5)
+	parser.add_argument('--momentum', nargs="?", type=float, default=0.5)
 	#beta1,beta2 and amsgrad can only be used with 'Adam'
-	parser.add_argument('--beta1', nargs="?", type=int, default=0.9)
-	parser.add_argument('--beta2', nargs="?", type=int, default=0.999)
+	parser.add_argument('--beta1', nargs="?", type=float, default=0.9)
+	parser.add_argument('--beta2', nargs="?", type=float, default=0.999)
 	parser.add_argument('--amsgrad', nargs="?", type=bool, default=False)
 	###type of Loss function###
 	#It should be 'CEL' (cross entropy loss) or 'KLD' (Kullback-Leibler divergence)
@@ -40,7 +40,7 @@ def get_args():
 	#learning rate is decreased at multiples of step size (epochs) i.e(7,14,21), with cutout techniques the best so far is 4
 	parser.add_argument('--step_size', nargs="?", type=int, default=7)
 	#decrease the learning rate at step size with gamma
-	parser.add_argument('--gamma', nargs="?", type=int, default=0.1)
+	parser.add_argument('--gamma', nargs="?", type=float, default=0.1)
 	###The number of resnet blocks to freeze, should be between[1,10]
 	parser.add_argument('--num_of_frozen_blocks', nargs="?", type=int, default=2)
 	###Augmentation technique arguments###
