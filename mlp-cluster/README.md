@@ -54,7 +54,7 @@ bash install/download_datasets.sh
 
 ## Submit job
 
-* Make sure to be inside the `mlp-cluster` directory
+* Make sure you are inside the `mlp-cluster` directory
 * Add the execution of your script to the bottom of `send_model_to_job.sh`. Nothing else in the script needs to be changed
 * Run `sbatch send_model_to_job.sh` to submit a job to the cluster
 * Now you will see a job id and you can view the terminal output will be output into `slurm-{job id}.out` in your current directory
@@ -63,5 +63,5 @@ bash install/download_datasets.sh
 
 ## Additional Information
 
-* More information can be accessed at the original MLP cluster set up guide[https://github.com/VICO-UoE/mlpractical/blob/mlp2021-22/mlp_cluster_tutorial/mlp_cluster_quick_start_up.md]
+* More information can be accessed at the original MLP cluster set up [guide](https://github.com/VICO-UoE/mlpractical/blob/mlp2021-22/mlp_cluster_tutorial/mlp_cluster_quick_start_up.md)
 * The Slurm [cheat sheet](https://github.com/JIC-CSB/SLURM-cheat-sheet) and [documentation](https://slurm.schedmd.com/) can be referenced for working more closely with the cluster manager.
