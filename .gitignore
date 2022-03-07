@@ -1,6 +1,7 @@
 .DS_Store
 __pycache__
 **/train_sub/*
+train/*
 *.jpeg
 *.JPEG
 *.jpg
