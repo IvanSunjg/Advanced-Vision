@@ -1,3 +1,9 @@
 .DS_Store
-**/train_sub/*/*
-__pycache__
+**/train_sub/*
+*.jpeg
+*.JPEG
+*.jpg
+*.JPG
+*.png
+*.PNG
+*.egg-info
