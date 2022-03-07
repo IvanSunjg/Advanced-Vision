@@ -1,4 +1,4 @@
-import utils
+from . import utils
 
 class CrossEntropyLoss():
     def __init__(self, size_average=True):

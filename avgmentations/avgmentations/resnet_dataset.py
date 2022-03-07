@@ -1,5 +1,5 @@
 from torchvision.datasets import ImageFolder
-import augmentations
+from . import augmentations
 
 class ResNetImageFolder(ImageFolder):
 

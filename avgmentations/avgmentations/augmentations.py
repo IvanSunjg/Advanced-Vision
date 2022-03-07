@@ -1,6 +1,6 @@
 import numpy as np
 from torchvision import transforms
-import utils
+from . import utils
 
 class OneHot():
     
