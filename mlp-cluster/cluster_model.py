@@ -51,7 +51,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
 
-        image_datasets['train'].update_transform(epoch)
+        image_datasets['train'].dataset.update_transform(epoch)
 
         # Each epoch has a training and validation phase
         for phase in ['train','val']:
