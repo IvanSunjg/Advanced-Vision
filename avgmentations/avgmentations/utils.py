@@ -3,16 +3,7 @@ import torch.nn.functional as F
 from torchvision import transforms
 import numpy as np
 import matplotlib.pyplot as plt
-
-# Mean and Standard Deviation of full Imagenet dataset
-RESNET_MEAN = np.array([0.485, 0.456, 0.406])
-RESNET_STD = np.array([0.229, 0.224, 0.225])
-DEFAULT_AUGMENTATION = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize(RESNET_MEAN, RESNET_STD),
-    transforms.Resize((256, 256)),
-    transforms.CenterCrop(224),
-])
+from .resnet_dataset import RESNET_MEAN, RESNET_STD
 
 def imshow(inp, title='untitled', norm=True):
     """Imshow for Tensor Images."""

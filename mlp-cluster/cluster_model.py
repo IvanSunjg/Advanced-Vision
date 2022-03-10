@@ -1,21 +1,17 @@
 #imports
-from avgmentations import augmentations, losses, utils
-from avgmentations.resnet_dataset import ResNetImageFolder
+from avgmentations import losses
+from avgmentations.resnet_dataset import ResNetImageFolder, RESNET_MEAN, RESNET_STD
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
-import numpy as np
 from torchvision import models, transforms
-import matplotlib.pyplot as plt
 import time
-import copy
-from torchvision.datasets import ImageFolder
 from torch.utils.data import Subset
 from sklearn.model_selection import train_test_split
-from torchvision.transforms import Compose, ToTensor, Resize
 from arg_extractor import get_args
 from copy import copy
+import experiment
 
 #splits the train data to train and validation sets
 def train_val_dataset(dataset, val_split=0.2):
@@ -26,15 +22,14 @@ def train_val_dataset(dataset, val_split=0.2):
     datasets['val'] = Subset(dataset, val_idx)
     
     datasets['train'].dataset = copy(dataset)
-    
     datasets['train'].dataset.transform = transforms.Compose([
     	transforms.ToTensor(),
-    	transforms.Normalize(utils.RESNET_MEAN, utils.RESNET_STD)
+    	transforms.Normalize(RESNET_MEAN, RESNET_STD)
     ])
             
     datasets['val'].dataset.transform = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize(utils.RESNET_MEAN, utils.RESNET_STD),
+        transforms.Normalize(RESNET_MEAN, RESNET_STD),
         transforms.Resize(256),
         transforms.CenterCrop(224),
     ])
@@ -116,6 +111,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 if __name__ == '__main__':
     ###command line rguments###
     args = get_args()
+
     path = args.path
     num_epochs = args.num_epochs
     optimizer_type = args.optimizer_type
@@ -131,48 +127,16 @@ if __name__ == '__main__':
     step_size = args.step_size
     gamma = args.gamma
     num_of_frozen_blocks = args.num_of_frozen_blocks 
-    argument1 = args.argument1
-    argument2 = args.argument2
-    argument3 = args.argument3
-    argument4 = args.argument4
-    argument5 = args.argument5
-    argument6 = args.argument6
-    argument7 = args.argument7
 
-    default_dataset = ImageFolder(
-        root = f'{path}/train',
-        transform = utils.DEFAULT_AUGMENTATION,
-        target_transform = augmentations.OneHot(1000)
-    )
+    exp_type = args.exp_type
+    exp_kwargs = args.exp_kwargs
+
+    exp = experiment.Experiment(root=f'{path}/train', n_classes=1000)
 
     #custom augmentations
     dataset = ResNetImageFolder(
-        f'{path}/train',
-        {
-            0: augmentations.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize(utils.RESNET_MEAN, utils.RESNET_STD),
-                transforms.Resize((256,256)),
-                transforms.CenterCrop(224),
-
-                #transforms.RandomHorizontalFlip(),
-                #transforms.RandomVerticalFlip(), 
-                #transforms.RandomCrop(224),
-                #transforms.RandomHorizontalFlip(),
-                #transforms.RandomAdjustSharpness(sharpness_factor=2),
-                #transforms.RandomAutocontrast(),
-                
-                #augmentations.Double(argument1), # Custom Double Augmentation
-                #augmentations.AugMix()
-                #augmentations.CornerMask(argument1)
-                augmentations.CutOut(argument1,argument2), # Custom Cutout Augmentation
-                #augmentations.GridMask(), # Custom GridMask Augmentation
-                #augmentations.MixUp(default_dataset, alpha=argument1, min_lam=argument2, max_lam=argument3),
-                #augmentations.CutMix(default_dataset, alpha=argument1, min_lam=argument2, max_lam=argument3),
-                #augmentations.P(augmentations.AugMix(), p=argument1) # Apply AugMix with 'argument1' probability
-                #augmentations.OneOf([augmentations.AugMix(), augmentations.GridMask()], p=[0.3, 0.7]) # Choose either AugMix or GridMask with probabilities 0.3 and 0.7 respectively. Can choose from any number of transformations
-            ])
-        }
+        root=f'{path}/train',
+        epoch_transforms=exp[exp_type](**exp_kwargs)
     )
 
     #gets separated data

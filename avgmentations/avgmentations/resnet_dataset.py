@@ -1,5 +1,10 @@
 from torchvision.datasets import ImageFolder
 from . import augmentations
+import numpy as np
+
+# Mean and Standard Deviation of full ImageNet dataset
+RESNET_MEAN = np.array([0.485, 0.456, 0.406])
+RESNET_STD = np.array([0.229, 0.224, 0.225])
 
 class ResNetImageFolder(ImageFolder):
 
