@@ -53,7 +53,10 @@ class Experiment():
                 transforms.RandomCrop(224),
                 A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
             ]),
-            stop_point: transforms.Compose(Experiment.init_transform)
+            stop_point: transforms.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+            ])
         }
         return exp
     
