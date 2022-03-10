@@ -131,12 +131,11 @@ if __name__ == '__main__':
     exp_type = args.exp_type
     exp_kwargs = args.exp_kwargs
 
-    exp = experiment.Experiment(root=f'{path}/train', n_classes=1000)
-
     #custom augmentations
+    exp = experiment.Experiment(root=f'{path}/train', n_classes=1000)
     dataset = ResNetImageFolder(
         root=f'{path}/train',
-        epoch_transforms=exp[exp_type](**exp_kwargs)
+        epoch_transforms=exp.construct_experiment(exp_type, **exp_kwargs)
     )
 
     #gets separated data

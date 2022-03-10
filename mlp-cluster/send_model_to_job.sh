@@ -34,6 +34,5 @@ export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 source /home/${STUDENT_ID}/miniconda3/bin/activate mlp
 
-python cluster_model.py --path /home/${STUDENT_ID}/Advanced-Vision --num_epochs 15 --optimizer_type 'SGD' --lr 0.006 --weight_decay 0.006 --momentum 0.5 --beta1 0 --beta2 0 --amsgrad False --loss_function 'CEL' --step_size 7 --gamma 0.1 --num_of_frozen_blocks 2 --argument1 3 --argument2 50 
+python cluster_model.py --path /home/${STUDENT_ID}/Advanced-Vision --num_epochs 15 --optimizer_type 'SGD' --lr 0.006 --weight_decay 0.006 --momentum 0.5 --beta1 0 --beta2 0 --amsgrad False --loss_function 'CEL' --step_size 7 --gamma 0.1 --num_of_frozen_blocks 2 --exp_type "early_mixup" --exp_kwargs "{'stop_point': 5}" 
 
-python cluster_model.py --path /home/${STUDENT_ID}/Advanced-Vision --num_epochs 15 --optimizer_type 'Adam' --lr 0.006 --weight_decay 0.006 --momentum 0 --beta1 0.9 --beta2 0.999 --amsgrad False --loss_function 'CEL' --step_size 7 --gamma 0.1 --num_of_frozen_blocks 2 --argument1 0 --argument2 0 

@@ -46,7 +46,7 @@ def get_args():
 	parser.add_argument('--num_of_frozen_blocks', nargs="?", type=int, default=2)
 
 	###Augmentation technique arguments###
-	parser.add_argument('--exp_type', type=str)
+	parser.add_argument('--exp_type', type=str, required=True)
 	parser.add_argument('--exp_kwargs', type=lambda x: ast.literal_eval(x), default={})
 	
 	args = parser.parse_args()
