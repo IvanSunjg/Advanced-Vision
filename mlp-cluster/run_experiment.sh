@@ -1,3 +1,4 @@
+#!/bin/bash
 export CUDA_HOME=/opt/cuda-9.0.176.1/
 
 export CUDNN_HOME=/opt/cuDNN-7.0/
