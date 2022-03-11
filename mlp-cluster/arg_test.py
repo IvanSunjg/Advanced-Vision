@@ -1,8 +1,12 @@
 from arg_extractor import get_args
 import experiment
+import sys
 
 # Script verify your command-line arguments passed to argparse
 # Example script use: python arg_test.py --exp_type "mixup" --exp_kwargs "{'alpha': 1, 'min_lam': 0.2}"
+
+print('RAW:', sys.argv[1:])
+print()
 
 args = get_args()
 print('argparse')

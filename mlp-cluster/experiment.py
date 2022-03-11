@@ -25,18 +25,18 @@ class Experiment():
             print(f'{exp_type} {exp_kwargs}')
         return getattr(self, exp_type)(**exp_kwargs)
 
-    def basic(self):
+    def basic(self, sharpness_factor=2):
         exp = {
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
                 transforms.RandomHorizontalFlip(),
-                transforms.RandomAdjustSharpness(sharpness_factor=2),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
             ])
         }
         return exp
     
-    def mixup(self, alpha=1.0, min_lam=0.3, max_lam=0.7):
+    def mixup(self, alpha=1.0, min_lam=0, max_lam=1):
         exp = {
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
@@ -46,7 +46,7 @@ class Experiment():
         }
         return exp
     
-    def early_mixup(self, stop_point=5, alpha=1.0, min_lam=0.3, max_lam=0.7):
+    def early_mixup(self, stop_point=5, alpha=1.0, min_lam=0, max_lam=1):
         exp = {
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
@@ -60,7 +60,7 @@ class Experiment():
         }
         return exp
     
-    def p_mixup(self, p, alpha=1.0, min_lam=0.3, max_lam=0.7):
+    def p_mixup(self, p, alpha=1.0, min_lam=0, max_lam=1):
         exp = {
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
@@ -73,7 +73,7 @@ class Experiment():
         }
         return exp
     
-    def cutmix(self, alpha=1.0, min_lam=0.3, max_lam=0.7):
+    def cutmix(self, alpha=1.0, min_lam=0, max_lam=1):
         exp = {
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
