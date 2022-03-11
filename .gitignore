@@ -11,4 +11,6 @@ resnet50_fconv_model_best.pth.tar
 *.PNG
 *.egg-info
 *.zip
+*.out
+*.err
 cookie
