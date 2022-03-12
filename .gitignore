@@ -12,5 +12,5 @@ resnet50_fconv_model_best.pth.tar
 *.egg-info
 *.zip
 mlp-cluster/*.out
-mlp-cluster/*.err
+*.err
 cookie
