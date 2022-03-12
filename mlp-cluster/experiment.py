@@ -46,6 +46,16 @@ class Experiment():
         }
         return exp
     
+    def augmix(self, k=3):
+        exp = {
+            0: transforms.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+                A.AugMix(k=k),
+            ])
+        }
+        return exp
+    
     def early_mixup(self, stop_point=5, alpha=1.0, min_lam=0, max_lam=1):
         exp = {
             0: A.Compose(Experiment.init_transform + [

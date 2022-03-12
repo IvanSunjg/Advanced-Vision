@@ -1,4 +1,9 @@
 #!/bin/sh
+
+exp_flags=("$@")
+exp_flags=("${exp_flags[@]/%/\"}")
+exp_flags=("${exp_flags[@]/#/\"}")
+
 sbatch <<EOT
 #!/bin/sh
 #SBATCH -N 1      # nodes requested
@@ -9,5 +14,5 @@ sbatch <<EOT
 #SBATCH --time=0-08:00:00
 #SBATCH --error="slurm-%j.err"
 
-bash run_experiment.sh "$@"
+bash run_experiment.sh ${exp_flags[@]}
 EOT

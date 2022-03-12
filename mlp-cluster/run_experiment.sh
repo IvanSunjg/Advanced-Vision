@@ -27,4 +27,4 @@ export DATASET_DIR=${TMP}/datasets/
 # Activate the relevant virtual environment:
 source /home/${STUDENT_ID}/miniconda3/bin/activate mlp
 
-python cluster_model.py --path /home/${STUDENT_ID}/Advanced-Vision/mlp-cluster $@
+python cluster_model.py --path /home/${STUDENT_ID}/Advanced-Vision/mlp-cluster "$@"
