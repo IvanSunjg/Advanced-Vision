@@ -30,6 +30,18 @@ We have built a workflow that allows us to very easily share and run experiments
             from avgmentations import augmentations as A
             from avgmentations.resnet_dataset import RESNET_MEAN, RESNET_STD
             from torchvision import transforms
+            from torchvision.datasets import ImageFolder
+
+            default_dataset = ImageFolder(
+              root = root,
+              transform = A.Compose(
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+              ]),
+              target_transform = A.OneHot(n_classes)
+            )
             ```
 
             1. In this example, we will define an experiment that applies just `CutOut` on all images at all epochs
@@ -78,9 +90,9 @@ We have built a workflow that allows us to very easily share and run experiments
                       transforms.Resize(256),
                       transforms.RandomCrop(224),
 
-                      A.MixUp(alpha=alpha, min_lam=min_lam, max_lam=max_lam)
+                      A.MixUp(default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
                     ]),
-                    n2: transforms.Compose([
+                    n2: A.Compose([
                       transforms.ToTensor(),
                       transforms.Normalize(RESNET_MEAN, RESNET_STD),
                       transforms.Resize(256),
@@ -91,7 +103,7 @@ We have built a workflow that allows us to very easily share and run experiments
 
                       A.GridMask()
                     ])
-                    n2: transforms.Compose([
+                    n2: A.Compose([
                       transforms.ToTensor(),
                       transforms.Normalize(RESNET_MEAN, RESNET_STD),
                       transforms.Resize(256),
