@@ -138,6 +138,8 @@ if __name__ == '__main__':
         epoch_transforms=exp.construct_experiment(exp_type, **exp_kwargs)
     )
 
+    print(args)
+
     #gets separated data
     image_datasets = train_val_dataset(dataset)
     #print the number of total images/train images/val images
