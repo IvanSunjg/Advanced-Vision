@@ -23,6 +23,7 @@ We have built a workflow that allows us to very easily share and run experiments
             * Different augmentations that are used during different epochs are joined using `then` and underscores, i.e. if an experiment applies `MixUp` for the first few epochs and then applies no advanced augmentations (aka `default`) afterwards, then its name would be `mixup_then_default`
         2. **"update-transforms" Python dictionary**: The "update-transforms" Python dictionary is a dictionary that defines what augmentations to apply at what epoch. The keys are integers that define the epoch at which a transform is applied, and the value for each epoch key is the transform to apply at that epoch. The transform can be any augmentation(s) from `torchvision.transforms`, `albumentations` (untested), or `avgmentations`.
         3. **Examples**
+
             For the following examples, assume that these imports and code have been run:
 
             ```python
