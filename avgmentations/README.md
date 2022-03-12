@@ -37,9 +37,10 @@ Example use for loading a dataset that uses multiple complex data augmentation t
 
 ```python
 from torchvision.datasets import ImageFolder
-from avgmentations.resnet_dataset import ResNetImageFolder
+from avgmentations.resnet_dataset import ResNetImageFolder, RESNET_MEAN, RESNET_STD
 from avgmentations import augmentations as A
 
+# Create dataset for image mixing for MixUp and CutMix
 default_dataset = ImageFolder(
     root = 'train',
     transform = transforms.Compose([
@@ -51,17 +52,23 @@ default_dataset = ImageFolder(
     target_transform = A.OneHot(1000)
 )
 
+# Create dataset that applies MixUp, then CutMix 
+# with a probability of 0.5, and finally GridMask
+# to each image
 dataset = ResNetImageFolder(
     'train',
     {
         0: A.Compose([
             transforms.ToTensor(),
-            transforms.Normalize(mean, std),
+            transforms.Normalize(RESNET_MEAN, RESNET_STD),
             transforms.Resize((256, 256)),
             transforms.CenterCrop(224),
 
             A.MixUp(default_dataset),
-            A.P(A.CutMix(default_dataset), p=0.5),
+            A.P(
+                A.CutMix(default_dataset),
+                p=0.5
+            ),
             A.GridMask()
         ])
     }
