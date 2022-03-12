@@ -14,13 +14,13 @@ We have built a workflow that allows us to very easily share and run experiments
     pip install 'git+https://github.com/IvanSunjg/Advanced-Vision.git#egg=avgmentations&subdirectory=avgmentations'
     ```
 
-2. Make sure that you are in the `Advanced-Vision/mlp-cluster/` directory
-3. Make sure that the image training folder, `train`, and the ResNet50 pretrained model, `resnet50_fconv_model_best.pth.tar`, are located in the `Advanced-Vision/mlp-cluster/` directory
+2. Make sure that you are in the `Advanced-Vision/mlp-cluster/` directory.
+3. Make sure that the image training folder, `train/`, and the ResNet50 pretrained model, `resnet50_fconv_model_best.pth.tar`, are located in the `Advanced-Vision/mlp-cluster/` directory.
 4. Define your experiment in [`experiment.py`](experiment.py)
     * To define an experiment, you have to add a function to [`experiment.py`](experiment.py) with the name of your experiment, its hyperparameters as the function parameters, and have the return value be an "update-transforms" Python dictionary.
         1. **Naming Convention**: For experiment names, we would like to use the following convention to make it clear what augmentations the experiment performs and how they are linked.
-            * Non-basic data augmentations are written in lowercase and joined using underscores in the order they are applied, i.e. if an experiment applies `AugMix` and then `CutOut` on all images, then its name would be `augmix_cutout`
-            * Different augmentations that are used during different epochs are joined using `then` and underscores, i.e. if an experiment applies `MixUp` for the first few epochs and then applies no advanced augmentations (aka `default`) afterwards, then its name would be `mixup_then_default`
+            * Non-basic data augmentations are written in lowercase and joined using underscores in the order they are applied, i.e. if an experiment applies `AugMix` and then `CutOut` on all images, then its name would be `augmix_cutout`.
+            * Different augmentations that are used during different epochs are joined using `then` and underscores, i.e. if an experiment applies `MixUp` for the first few epochs and then applies no advanced augmentations (aka `default`) afterwards, then its name would be `mixup_then_default`.
         2. **"update-transforms" Python dictionary**: The "update-transforms" Python dictionary is a dictionary that defines what augmentations to apply at what epoch. The keys are integers that define the epoch at which a transform is applied, and the value for each epoch key is the transform to apply at that epoch. The transform can be any augmentation(s) from `torchvision.transforms`, `albumentations` (untested), or `avgmentations`.
         3. **Examples**
 
@@ -44,7 +44,7 @@ We have built a workflow that allows us to very easily share and run experiments
             )
             ```
 
-            1. In this example, we will define an experiment that applies just `CutOut` on all images at all epochs
+            1. In this example, we will define an experiment that applies just `CutOut` on all images at all epochs.
 
                 ```python
                 def cutout(self, n_holes=3, length=50):
@@ -61,7 +61,7 @@ We have built a workflow that allows us to very easily share and run experiments
                   return exp
                 ```
 
-            2. In this example, we will define an experiment that applies `AugMix` then `CutOut` on all images at all epochs
+            2. In this example, we will define an experiment that applies `AugMix` then `CutOut` on all images at all epochs.
 
                 ```python
                 def augmix_cutout(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2, n_holes=3, length=50):
@@ -79,7 +79,7 @@ We have built a workflow that allows us to very easily share and run experiments
                   return exp
                 ```
 
-            3. In this example, we will define an experiment that applies `MixUp` until epoch `n1`, and then applies basic augmentations followed by `GridMask` until epoch `n2`, and finally applying no augmentations (aka `default`) for the rest of the epochs
+            3. In this example, we will define an experiment that applies `MixUp` until epoch `n1`, and then applies basic augmentations followed by `GridMask` until epoch `n2`, and finally applying no augmentations (aka `default`) for the rest of the epochs.
 
                 ```python
                 def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpnesss_factor=2):
@@ -114,10 +114,10 @@ We have built a workflow that allows us to very easily share and run experiments
                 ```
 
 5. Run Your Experiment
-    * To submit and run experiment on the cluster, you have to run `bash send_model_to_job.sh` with flags that specify exactly what experiment you would like to run and what training hyperparameters you would like to use
+    * To submit and run experiment on the cluster, you have to run `bash send_model_to_job.sh` with flags that specify exactly what experiment you would like to run and what training hyperparameters you would like to use.
         1. **Experiment Specifications**: To specify the type of experiment you would like to run, you must use the `--exp_type` and `--exp_kwargs` flags
-            1. `--exp_type`: Short for "experiment type", this flag defines the type of experiment you would like to run and the supplied argument should be the name of an experiment defined in [`experiment.py`](experiment.py). For example, if we wanted to run the `AugMix` and `CutOut` experiment defined in the second example above, we supply *augmix_cutout* for the `--exp_type` flag. Notice that the supplied argument matches the exact name used for the experiment's function definition
-            2. `--exp_kwargs`: Short for "experiment keyword arguments", this flag defines the parameters you would like to pass to the experiment as defined in the experiment's function definition. The passed argument needs to be a string containing a Python dictionary of the parameters you would like to manipulate, and their corresponding value. For example, if we wanted to use only 2 augmentations for `AugMix` and 2 holes of length 80 for `CutOut` in the `CutOut` and `AugMix` experiment defined in the second example above, we would supply *"{'k': 2, 'n_holes': 2, 'length': 80}"* for the `--exp_kwargs` flag. Notice that the supplied argument is wrapped in quotes, the keys of dictionary are strings, and that those keys match the specificed parameter names in the function definition
+            1. `--exp_type`: Short for "experiment type", this flag defines the type of experiment you would like to run and the supplied argument should be the name of an experiment defined in [`experiment.py`](experiment.py). For example, if we wanted to run the `AugMix` and `CutOut` experiment defined in the second example above, we supply *augmix_cutout* for the `--exp_type` flag. Notice that the supplied argument matches the exact name used for the experiment's function definition.
+            2. `--exp_kwargs`: Short for "experiment keyword arguments", this flag defines the parameters you would like to pass to the experiment as defined in the experiment's function definition. The passed argument needs to be a string containing a Python dictionary of the parameters you would like to manipulate, and their corresponding value. For example, if we wanted to use only 2 augmentations for `AugMix` and 2 holes of length 80 for `CutOut` in the `CutOut` and `AugMix` experiment defined in the second example above, we would supply *"{'k': 2, 'n_holes': 2, 'length': 80}"* for the `--exp_kwargs` flag. Notice that the supplied argument is wrapped in quotes, the keys of dictionary are strings, and that those keys match the specificed parameter names in the function definition.
 
             Together, you can run specific experiments with the default hyperparameters defined in [`arg_extractor.py`](arg_extractor.py) by only specifying the `--exp_type` flag and optionally the `--exp_kwargs` flag depending on if default values have been specified for the experiment's function parameters. Following the examples just discussed you can run the customized `AugMix` and `CutOut` experiment using:
 
