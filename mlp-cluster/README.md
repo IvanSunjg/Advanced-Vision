@@ -92,7 +92,7 @@ We have built a workflow that allows us to very easily share and run experiments
 
                       A.MixUp(default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
                     ]),
-                    n2: A.Compose([
+                    n1: A.Compose([
                       transforms.ToTensor(),
                       transforms.Normalize(RESNET_MEAN, RESNET_STD),
                       transforms.Resize(256),
