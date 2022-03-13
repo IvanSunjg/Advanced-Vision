@@ -135,7 +135,15 @@ We have built a workflow that allows us to very easily share and run experiments
         ```
 
 6. Interpret Output and Errors
-    * When you have successfully submitted an experiment job, you will be supplied with `job_id` which you can also find using `squeue -u $USER` to view your job's info. The output of the job will be directed to `slurm-{job_id}.out` and the errors of the job will be directed to `slurm-{job_id}.err`.
+    1. When you have successfully submitted an experiment job, you will be supplied with `job_id` which you can also find using `squeue -u $USER` to view your job's info. The output of the job will be directed to `slurm-{job_id}.out` and the errors of the job will be directed to `slurm-{job_id}.err`.
+    2. After your experiment has finished running, please move the relevant output file to the relevant experiment folder in the results folder. The results folder has sub-folders each named, following the naming convention, for the experiment that they hold the outputs for. For example, `MixUp` experiments are saved in `results/mixup`. If the relevant sub-folder doesn't exist, then please create it. You can move the outputs using
+
+      ```bash
+      mkdir results/{experiment_name} # if necessary
+      
+      mv slurm-{job_id}.out results/{experiment_name}
+      ```
+
     * The first line of the output file will show which experiment type and experiment keyword arguments were used. The second line should print all of the hyperparameter and flag values as designated by our [argument extractor](arg_extractor.py).
 7. Share Experiments for Other to Run
     * Some experiments, such as `MixUp` and `CutMix`, will take longer than others to run and so having multiple people testing the same base experiment but with different hyperparameters in parallel will be very beneficial. Using this framework, this can be done by just sending a colleague the `--exp_type` and `--exp_kwargs` flags and syncing on what hyperparameters you guys would like to test in parallel.
