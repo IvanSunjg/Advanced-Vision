@@ -73,7 +73,7 @@ We have built a workflow that allows us to very easily share and run experiments
                       transforms.Resize(256),
                       transforms.RandomCrop(224),
 
-                      A.AugMix(k=k, w1=w1, w2=w2, m=m)
+                      A.AugMix(k=k, w1=w1, w2=w2, m=m),
                       A.CutOut(n_holes=n_holes, length=length)
                     ])
                   }
@@ -83,7 +83,7 @@ We have built a workflow that allows us to very easily share and run experiments
             3. In this example, we will define an experiment that applies `MixUp` until epoch `n1`, and then applies basic augmentations followed by `GridMask` until epoch `n2`, and finally applying no augmentations (aka `default`) for the rest of the epochs.
 
                 ```python
-                def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpnesss_factor=2):
+                def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpness_factor=2):
                   exp = {
                     0: A.Compose([
                       transforms.ToTensor(),
@@ -103,7 +103,7 @@ We have built a workflow that allows us to very easily share and run experiments
                       transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
 
                       A.GridMask()
-                    ])
+                    ]),
                     n2: A.Compose([
                       transforms.ToTensor(),
                       transforms.Normalize(RESNET_MEAN, RESNET_STD),

@@ -36,11 +36,25 @@ class Experiment():
         }
         return exp
     
+    def cutout(self, n_holes=3, length=50):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.CutOut(n_holes=n_holes, length=length)
+            ])
+        }
+        return exp
+    
     def augmix(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
         exp = {
             0: transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.AugMix(k=k, w1=w1, w2=w2, w3=w3, m=m),
             ])
         }
@@ -51,6 +65,7 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
             ])
         }
@@ -61,6 +76,7 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
             ]),
             stop_point: transforms.Compose(Experiment.init_transform + [
@@ -75,6 +91,7 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.P(
                     A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam), 
                     p=p
@@ -88,11 +105,13 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
             ]),
             stop_point: transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
             ])
@@ -114,6 +133,7 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
             ]),
             stop_point: transforms.Compose(Experiment.init_transform + [
@@ -128,10 +148,55 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.P(
                     A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam), 
                     p=p
                 ),
+            ])
+        }
+        return exp
+    
+    def augmix_cutout(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2, n_holes=3, length=50):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.AugMix(k=k, w1=w1, w2=w2, m=m),
+                A.CutOut(n_holes=n_holes, length=length)
+            ])
+        }
+        return exp
+    
+    def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpness_factor=2):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
+            ]),
+            n1: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+
+                A.GridMask()
+            ]),
+            n2: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
             ])
         }
         return exp
