@@ -121,14 +121,14 @@ class AugMix():
     k: number of different augumentations taken (default 3)
     w1,w2,w3: weight for each augumentated image to mixup
     m: weight for mix with the original and the mixup augumentated image
+    level: level of augmentation
     '''
 
-    def __init__(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
+    def __init__(self, k=3, w=[0.2, 0.3, 0.5], m=0.2, level = 3):
         self.k = k
-        self.w1 = w1
-        self.w2 = w2
-        self.w3 = w3
+        self.w = w
         self.m = m
+        self.level = level
 
     def __call__(self, img):
         '''
@@ -137,11 +137,11 @@ class AugMix():
         '''
 
         # TODO could modify different augmentation method hyperparameters
-        miximg = utils.augmix(img, k=self.k, w1=self.w1, w2=self.w2, w3=self.w3, m=self.m)
+        miximg = utils.augmix(img, k=self.k, w=self.w, m=self.m, level=self.level)
         return miximg
     
     def __repr__(self):
-        return self.__class__.__name__ + f'(k={self.k}, w1={self.w1}, w2={self.w2}, w3={self.w3}, m={self.m})'
+        return self.__class__.__name__ + f'(k={self.k}, w={self.w}, m={self.m}, level={self.level})'
 
 class OneOf(ItemTransform):
 
