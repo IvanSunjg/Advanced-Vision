@@ -1,0 +1,72 @@
+cutmix {'alpha': 1}
+Namespace(amsgrad=False, beta1=0.9, beta2=0.999, exp_kwargs={'alpha': 1}, exp_type='cutmix', gamma=0.1, label_smoothing=0.0, loss_function='CEL', lr=0.006, momentum=0.5, num_epochs=15, num_of_frozen_blocks=2, optimizer_type='SGD', path='/home/s1870157/Advanced-Vision/mlp-cluster', reduction='mean', step_size=7, weight_decay=0.006)
+50000
+40000
+10000
+Epoch 0/14
+----------
+train Loss: 6.0616 Acc: 0.1300
+val Loss: 3.4931 Acc: 0.2720
+
+Epoch 1/14
+----------
+train Loss: 5.0182 Acc: 0.1672
+val Loss: 3.3899 Acc: 0.2890
+
+Epoch 2/14
+----------
+train Loss: 4.9255 Acc: 0.1818
+val Loss: 3.3020 Acc: 0.3009
+
+Epoch 3/14
+----------
+train Loss: 4.8659 Acc: 0.1885
+val Loss: 3.2340 Acc: 0.3117
+
+Epoch 4/14
+----------
+train Loss: 4.8049 Acc: 0.2014
+val Loss: 3.2090 Acc: 0.3169
+
+Epoch 5/14
+----------
+train Loss: 4.7673 Acc: 0.2035
+val Loss: 3.1586 Acc: 0.3267
+
+Epoch 6/14
+----------
+train Loss: 4.7078 Acc: 0.2170
+val Loss: 3.1310 Acc: 0.3297
+
+Epoch 7/14
+----------
+train Loss: 4.6572 Acc: 0.2256
+val Loss: 3.0789 Acc: 0.3376
+
+Epoch 8/14
+----------
+train Loss: 4.6336 Acc: 0.2267
+val Loss: 3.0629 Acc: 0.3417
+
+Epoch 9/14
+----------
+train Loss: 4.6173 Acc: 0.2305
+val Loss: 3.0532 Acc: 0.3431
+
+Epoch 10/14
+----------
+train Loss: 4.6199 Acc: 0.2316
+val Loss: 3.0475 Acc: 0.3437
+
+Epoch 11/14
+----------
+train Loss: 4.6035 Acc: 0.2342
+val Loss: 3.0423 Acc: 0.3454
+
+Epoch 12/14
+----------
+train Loss: 4.6027 Acc: 0.2342
+val Loss: 3.0398 Acc: 0.3446
+
+Epoch 13/14
+----------
