@@ -65,7 +65,7 @@ def augmix(img, k=3, w = [0.2, 0.3, 0.5], m=0.2, level = 3):
         elif aug == "shear_x":
             new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (np.random.uniform(-10 * level, 10 * level),0))
         elif aug == "shear_y":
-            new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (0,np.absrandom.uniform(-10 * level, 10 * level)))
+            new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (0,np.random.uniform(-10 * level, 10 * level)))
 
         images.append(new_image)
 
