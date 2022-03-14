@@ -28,7 +28,7 @@ def double(img, spread):
 
     return img
 
-def augmix(img, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
+def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2):
     '''
     @article{hendrycks2020augmix,
     title={{AugMix}: A Simple Data Processing Method to Improve Robustness and Uncertainty},
@@ -41,6 +41,8 @@ def augmix(img, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
     w1,w2,w3: weight for each augumentated image to mixup
     m: weight for mix with the original and the mixup augumentated image
     '''
+    if k != len(w):
+        raise ValueError(f'k={k} must match the length of w={len(w)}.')
 
     auglist = ["hflip", "vflip", "rotate", "translate_x", "translate_y"]
     augs = np.random.choice(auglist, k)
@@ -59,7 +61,9 @@ def augmix(img, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
             new_image = transforms.functional.affine(img, translate=(0, np.random.uniform(-100, 100)), angle=0, scale=1, shear=0)
         images.append(new_image)
     
-    mixed = torch.mul(images[0], w1) + torch.mul(images[1], w2) + torch.mul(images[2], w3)
+    mixed = torch.zeros(img.size())
+    for image, w in zip(images, w):
+        mixed += torch.mul(image, w)
     miximg = torch.mul(mixed, 1 - m) + torch.mul(img, m)
     
     return miximg
