@@ -208,3 +208,20 @@ class Experiment():
             ])
         }
         return exp
+    
+    def oneof__mixup_cutmix(self, p=[0.5, 0.5], alpha1=1, alpha2=1):
+        exp = {
+            0: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.OneOf(
+                    transforms=[
+                        A.MixUp(self.default_dataset, alpha=alpha1),
+                        A.CutMix(self.default_dataset, alpha=alpha2)
+                    ],
+                    p=p
+                )
+            ])
+        }
+        return exp
