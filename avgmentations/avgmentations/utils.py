@@ -28,7 +28,7 @@ def double(img, spread):
 
     return img
 
-def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2):
+def augmix(img, k=3, w = [0.2, 0.3, 0.5], m=0.2, level = 3):
     '''
     @article{hendrycks2020augmix,
     title={{AugMix}: A Simple Data Processing Method to Improve Robustness and Uncertainty},
@@ -37,14 +37,15 @@ def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2):
     year={2020}
     }
 
-    k: number of different augumentations taken (default 3)
-    w1,w2,w3: weight for each augumentated image to mixup
-    m: weight for mix with the original and the mixup augumentated image
+    k: number of different augmentations taken (default 3)
+    w1,w2,w3: weight for each augmentated image to mixup
+    m: weight for mix with the original and the mixup augmentated image
+    level: level of augmention
     '''
     if k != len(w):
         raise ValueError(f'k={k} must match the length of w={len(w)}.')
 
-    auglist = ["hflip", "vflip", "rotate", "translate_x", "translate_y"]
+    auglist = ["hflip", "vflip", "autocontrast", "rotate", "translate_x", "translate_y", "shear_x", "shear_y"]
     augs = np.random.choice(auglist, k)
     images = []
     for aug in augs:
@@ -52,18 +53,26 @@ def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2):
             new_image = transforms.functional.hflip(img)
         elif aug == "vflip":
             new_image = transforms.functional.vflip(img)
+        elif aug == "autocontrast":
+            new_image = transforms.functional.autocontrast(img)
         elif aug == "rotate":
             # small rotation degree in order to keep the image not to be destroyed 
-            new_image = transforms.functional.rotate(img, np.random.randint(-20, 20))
+            new_image = transforms.functional.rotate(img, np.random.randint(-10 * level, 10 * level))
         elif aug == "translate_x":
-            new_image = transforms.functional.affine(img, translate=(np.random.uniform(-100, 100), 0), angle=0, scale=1, shear=0)
+            new_image = transforms.functional.affine(img, translate=(np.random.uniform(-10 * level, 10 * level), 0), angle=0, scale=1, shear=0)
         elif aug == "translate_y":
-            new_image = transforms.functional.affine(img, translate=(0, np.random.uniform(-100, 100)), angle=0, scale=1, shear=0)
+            new_image = transforms.functional.affine(img, translate=(0, np.random.uniform(-10 * level, 10 * level)), angle=0, scale=1, shear=0)
+        elif aug == "shear_x":
+            new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (np.random.uniform(-10 * level, 10 * level),0))
+        elif aug == "shear_y":
+            new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (0,np.absrandom.uniform(-10 * level, 10 * level)))
+
         images.append(new_image)
-    
-    mixed = torch.zeros(img.size())
-    for image, w in zip(images, w):
-        mixed += torch.mul(image, w)
+
+    mixed = torch.zeros_like(img)
+    for i in range(k):
+        mixed += torch.mul(images[i], w[i])
+
     miximg = torch.mul(mixed, 1 - m) + torch.mul(img, m)
     
     return miximg
