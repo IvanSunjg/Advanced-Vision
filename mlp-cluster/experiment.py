@@ -50,13 +50,13 @@ class Experiment():
         }
         return exp
     
-    def augmix(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2):
+    def augmix(self, k=3, w=[0.2, 0.3, 0.5], m=0.2):
         exp = {
             0: transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
 
-                A.AugMix(k=k, w1=w1, w2=w2, w3=w3, m=m)
+                A.AugMix(k=k, w=w, m=m)
             ])
         }
         return exp
@@ -159,13 +159,13 @@ class Experiment():
         }
         return exp
     
-    def augmix_cutout(self, k=3, w1=0.2, w2=0.3, w3=0.5, m=0.2, n_holes=3, length=50):
+    def augmix_cutout(self, k=3, w=[0.2, 0.3, 0.5], m=0.2, n_holes=3, length=50):
         exp = {
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
 
-                A.AugMix(k=k, w1=w1, w2=w2, m=m),
+                A.AugMix(k=k, w=w, m=m),
                 A.CutOut(n_holes=n_holes, length=length)
             ])
         }
