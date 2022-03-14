@@ -42,6 +42,8 @@ def augmix(img, k=3, w = [0.2, 0.3, 0.5], m=0.2, level = 3):
     m: weight for mix with the original and the mixup augmentated image
     level: level of augmention
     '''
+    if k != len(w):
+        raise ValueError(f'k={k} must match the length of w={len(w)}.')
 
     auglist = ["hflip", "vflip", "autocontrast", "rotate", "translate_x", "translate_y", "shear_x", "shear_y"]
     augs = np.random.choice(auglist, k)

@@ -73,7 +73,7 @@ We have built a workflow that allows us to very easily share and run experiments
                       transforms.Resize(256),
                       transforms.RandomCrop(224),
 
-                      A.AugMix(k=k, w1=w1, w2=w2, m=m)
+                      A.AugMix(k=k, w1=w1, w2=w2, m=m),
                       A.CutOut(n_holes=n_holes, length=length)
                     ])
                   }
@@ -83,7 +83,7 @@ We have built a workflow that allows us to very easily share and run experiments
             3. In this example, we will define an experiment that applies `MixUp` until epoch `n1`, and then applies basic augmentations followed by `GridMask` until epoch `n2`, and finally applying no augmentations (aka `default`) for the rest of the epochs.
 
                 ```python
-                def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpnesss_factor=2):
+                def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpness_factor=2):
                   exp = {
                     0: A.Compose([
                       transforms.ToTensor(),
@@ -103,7 +103,7 @@ We have built a workflow that allows us to very easily share and run experiments
                       transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
 
                       A.GridMask()
-                    ])
+                    ]),
                     n2: A.Compose([
                       transforms.ToTensor(),
                       transforms.Normalize(RESNET_MEAN, RESNET_STD),
@@ -118,26 +118,34 @@ We have built a workflow that allows us to very easily share and run experiments
     * To submit and run experiment on the cluster, you have to run `bash send_model_to_job.sh` with flags that specify exactly what experiment you would like to run and what training hyperparameters you would like to use. Use `send_model_to_long_job.sh` if you believe the experiment will run for longer than 8 hours.
         1. **Experiment Specifications**: To specify the type of experiment you would like to run, you must use the `--exp_type` and `--exp_kwargs` flags
             1. `--exp_type`: Short for "experiment type", this flag defines the type of experiment you would like to run and the supplied argument should be the name of an experiment defined in [`experiment.py`](experiment.py). For example, if we wanted to run the `AugMix` and `CutOut` experiment defined in the second example above, we supply *augmix_cutout* for the `--exp_type` flag. Notice that the supplied argument matches the exact name used for the experiment's function definition.
-            2. `--exp_kwargs`: Short for "experiment keyword arguments", this flag defines the parameters you would like to pass to the experiment as defined in the experiment's function definition. The passed argument needs to be a string containing a Python dictionary of the parameters you would like to manipulate, and their corresponding value. For example, if we wanted to use only 2 augmentations for `AugMix` and 2 holes of length 80 for `CutOut` in the `CutOut` and `AugMix` experiment defined in the second example above, we would supply *"{'k': 2, 'n_holes': 2, 'length': 80}"* for the `--exp_kwargs` flag. Notice that the supplied argument is wrapped in quotes, the keys of dictionary are strings, and that those keys match the specificed parameter names in the function definition.
+            2. `--exp_kwargs`: Short for "experiment keyword arguments", this flag defines the parameters you would like to pass to the experiment as defined in the experiment's function definition. The passed argument needs to be a string containing a Python dictionary of the parameters you would like to manipulate, and their corresponding value. For example, if we wanted to use 3 augmentations for `AugMix` and 2 holes of length 80 for `CutOut` in the `CutOut` and `AugMix` experiment defined in the second example above, we would supply *"{'k': 3, 'n_holes': 2, 'length': 80}"* for the `--exp_kwargs` flag. Notice that the supplied argument is wrapped in quotes, the keys of the dictionary are strings, and that those keys match the specified parameter names in the function definition.
 
             Together, you can run specific experiments with the default hyperparameters defined in [`arg_extractor.py`](arg_extractor.py) by only specifying the `--exp_type` flag and optionally the `--exp_kwargs` flag depending on if default values have been specified for the experiment's function parameters. Following the examples just discussed you can run the customized `AugMix` and `CutOut` experiment using:
 
             ```bash
-            bash send_model_to_job.sh --exp_type augmix_cutout --exp_kwargs "{'k': 2, 'n_holes': 2, 'length': 80}"
+            bash send_model_to_job.sh --exp_type augmix_cutout --exp_kwargs "{'k': 3, 'n_holes': 2, 'length': 80}"
             ```
 
         2. **Training Hyperparameters**: To specify the model training hyperparameters, you can use the flags defined in [`arg_extractor.py`](arg_extractor.py). These can be used to specify the learning rate, step size, gamma, weight decay, loss function, etc.
 
-        All together, you can run specified experiments using supplied training hyperparameters with `bash send_model_to_job.sh` and the relevant flags as explained above. This will start send the experiment to the Slurm cluster and start it automatically. For example, to send the `AugMix` and `CutOut` example experiment with a learning rate of 0.1 to Slurm, you can run the following:
+        All together, you can run specified experiments using supplied training hyperparameters with `bash send_model_to_job.sh` and the relevant flags as explained above. This will send the experiment to the Slurm cluster and start it automatically. For example, to send the `AugMix` and `CutOut` example experiment with a learning rate of 0.1 to Slurm, you can run the following:
 
         ```bash
-        bash send_model_to_job.sh --exp_type augmix_cutout --exp_kwargs "{'k': 2, 'n_holes': 2, 'length': 80}" --lr 0.1
+        bash send_model_to_job.sh --exp_type augmix_cutout --exp_kwargs "{'k': 3, 'n_holes': 2, 'length': 80}" --lr 0.1
         ```
 
 6. Interpret Output and Errors
-    * When you have successfully submitted an experiment job, you will be supplied with `job_id` which you can also find using `squeue -u $USER` to view your job's info. The output of the job will be directed to `slurm-{job_id}.out` and the errors of the job will be directed to `slurm-{job_id}.err`.
+    1. When you have successfully submitted an experiment job, you will be supplied with `job_id` which you can also find using `squeue -u $USER` to view your job's info. The output of the job will be directed to `slurm-{job_id}.out` and the errors of the job will be directed to `slurm-{job_id}.err`.
+    2. After your experiment has finished running, please move the relevant output file to the relevant experiment folder in the results folder. The results folder has sub-folders each named, following the naming convention, for the experiment that they hold the outputs for. For example, `MixUp` experiments are saved in `results/mixup`. If the relevant sub-folder doesn't exist, then please create it. You can move the outputs using
+
+      ```bash
+      mkdir results/{experiment_name} # if necessary
+
+      mv slurm-{job_id}.out results/{experiment_name}
+      ```
+
     * The first line of the output file will show which experiment type and experiment keyword arguments were used. The second line should print all of the hyperparameter and flag values as designated by our [argument extractor](arg_extractor.py).
-7. Share Experiments for Other to Run
+7. Share Experiments for Others to Run
     * Some experiments, such as `MixUp` and `CutMix`, will take longer than others to run and so having multiple people testing the same base experiment but with different hyperparameters in parallel will be very beneficial. Using this framework, this can be done by just sending a colleague the `--exp_type` and `--exp_kwargs` flags and syncing on what hyperparameters you guys would like to test in parallel.
 
 Hopefully this helps provide insight into how to submit experiments using our new workflow :)

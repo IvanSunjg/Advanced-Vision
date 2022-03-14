@@ -7,7 +7,7 @@ class Experiment():
 
     init_transform = [
         transforms.ToTensor(),
-        transforms.Normalize(RESNET_MEAN, RESNET_STD),
+        transforms.Normalize(RESNET_MEAN, RESNET_STD)
     ]
 
     def __init__(self, root, n_classes=1000):
@@ -15,7 +15,7 @@ class Experiment():
             root = root,
             transform = transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
-                transforms.CenterCrop(224),
+                transforms.CenterCrop(224)
             ]),
             target_transform = A.OneHot(n_classes)
         )
@@ -30,8 +30,22 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 transforms.RandomHorizontalFlip(),
-                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor)
+            ])
+        }
+        return exp
+    
+    def cutout(self, n_holes=3, length=50):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.CutOut(n_holes=n_holes, length=length)
             ])
         }
         return exp
@@ -51,7 +65,8 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
-                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
+
+                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
             ])
         }
         return exp
@@ -61,11 +76,12 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
-                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
+
+                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
             ]),
             stop_point: transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
-                transforms.RandomCrop(224),
+                transforms.RandomCrop(224)
             ])
         }
         return exp
@@ -75,10 +91,11 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.P(
                     A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam), 
                     p=p
-                ),
+                )
             ])
         }
         return exp
@@ -88,13 +105,15 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
-                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
+
+                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
             ]),
             stop_point: transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 transforms.RandomHorizontalFlip(),
-                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor)
             ])
         }
         return exp
@@ -104,7 +123,8 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
-                A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
+
+                A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
             ])
         }
         return exp
@@ -114,11 +134,12 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
-                A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam),
+
+                A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
             ]),
             stop_point: transforms.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
-                transforms.RandomCrop(224),
+                transforms.RandomCrop(224)
             ])
         }
         return exp
@@ -128,10 +149,61 @@ class Experiment():
             0: A.Compose(Experiment.init_transform + [
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
+
                 A.P(
                     A.CutMix(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam), 
                     p=p
-                ),
+                )
+            ])
+        }
+        return exp
+    
+    def augmix_cutout(self, k=3, w=[0.2, 0.3, 0.5], m=0.2, level= 3, n_holes=3, length=50):
+        exp = {
+            0: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.AugMix(k=k, w=w, m=m,level = level),
+                A.CutOut(n_holes=n_holes, length=length)
+            ])
+        }
+        return exp
+    
+    def basic_mixup(self, sharpness_factor=2, alpha=1.0, min_lam=0, max_lam=1):
+        exp = {
+            0: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+
+                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
+            ])
+        }
+        return exp
+    
+    def mixup_then_basic_gridmask_then_default(self, n1, n2, alpha=1.0, min_lam=0, max_lam=1, sharpness_factor=2):
+        exp = {
+            0: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.MixUp(self.default_dataset, alpha=alpha, min_lam=min_lam, max_lam=max_lam)
+            ]),
+            n1: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+
+                A.GridMask()
+            ]),
+            n2: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224)
             ])
         }
         return exp
