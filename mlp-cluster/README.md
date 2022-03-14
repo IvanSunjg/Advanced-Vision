@@ -145,7 +145,7 @@ We have built a workflow that allows us to very easily share and run experiments
       ```
 
     * The first line of the output file will show which experiment type and experiment keyword arguments were used. The second line should print all of the hyperparameter and flag values as designated by our [argument extractor](arg_extractor.py).
-7. Share Experiments for Other to Run
+7. Share Experiments for Others to Run
     * Some experiments, such as `MixUp` and `CutMix`, will take longer than others to run and so having multiple people testing the same base experiment but with different hyperparameters in parallel will be very beneficial. Using this framework, this can be done by just sending a colleague the `--exp_type` and `--exp_kwargs` flags and syncing on what hyperparameters you guys would like to test in parallel.
 
 Hopefully this helps provide insight into how to submit experiments using our new workflow :)
