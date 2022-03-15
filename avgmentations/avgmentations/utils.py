@@ -28,7 +28,7 @@ def double(img, spread):
 
     return img
 
-def augmix(img, k=3, w = [0.2, 0.3, 0.5], m=0.2, level = 3):
+def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2, level=3):
     '''
     @article{hendrycks2020augmix,
     title={{AugMix}: A Simple Data Processing Method to Improve Robustness and Uncertainty},
@@ -38,8 +38,8 @@ def augmix(img, k=3, w = [0.2, 0.3, 0.5], m=0.2, level = 3):
     }
 
     k: number of different augmentations taken (default 3)
-    w1,w2,w3: weight for each augmentated image to mixup
-    m: weight for mix with the original and the mixup augmentated image
+    w: list of weights for each augmentation to mixup
+    m: weight of the original image when mixing it with the mixed augmentation image
     level: level of augmention
     '''
     if k != len(w):
@@ -56,16 +56,16 @@ def augmix(img, k=3, w = [0.2, 0.3, 0.5], m=0.2, level = 3):
         elif aug == "autocontrast":
             new_image = transforms.functional.autocontrast(img)
         elif aug == "rotate":
-            # small rotation degree in order to keep the image not to be destroyed 
+            # small rotation degree in order to keep the image from being destroyed 
             new_image = transforms.functional.rotate(img, np.random.randint(-10 * level, 10 * level))
         elif aug == "translate_x":
             new_image = transforms.functional.affine(img, translate=(np.random.uniform(-10 * level, 10 * level), 0), angle=0, scale=1, shear=0)
         elif aug == "translate_y":
             new_image = transforms.functional.affine(img, translate=(0, np.random.uniform(-10 * level, 10 * level)), angle=0, scale=1, shear=0)
         elif aug == "shear_x":
-            new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (np.random.uniform(-10 * level, 10 * level),0))
+            new_image = transforms.functional.affine(img, translate=(0, 0), angle=0, scale=1, shear=(np.random.uniform(-10 * level, 10 * level), 0))
         elif aug == "shear_y":
-            new_image = transforms.functional.affine(img, translate=(0,0),angle=0, scale = 1,shear = (0,np.absrandom.uniform(-10 * level, 10 * level)))
+            new_image = transforms.functional.affine(img, translate=(0, 0), angle=0, scale=1, shear=(0, np.random.uniform(-10 * level, 10 * level)))
 
         images.append(new_image)
 

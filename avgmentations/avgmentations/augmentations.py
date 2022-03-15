@@ -124,7 +124,7 @@ class AugMix():
     level: level of augmentation
     '''
 
-    def __init__(self, k=3, w=[0.2, 0.3, 0.5], m=0.2, level = 3):
+    def __init__(self, k=3, w=[0.2, 0.3, 0.5], m=0.2, level=3):
         self.k = k
         self.w = w
         self.m = m
