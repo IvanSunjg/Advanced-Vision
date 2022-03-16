@@ -50,6 +50,19 @@ class Experiment():
         }
         return exp
     
+    def gridmask(self):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.GridMask()
+            ])
+        }
+        return exp
+    
     def augmix(self, k=3, w=[0.2, 0.3, 0.5], m=0.2, level=3):
         exp = {
             0: transforms.Compose(Experiment.init_transform + [
