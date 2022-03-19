@@ -237,3 +237,29 @@ class Experiment():
             ])
         }
         return exp
+    
+    def mixup_mixup(self, alpha1=1, alpha2=1):
+        exp = {
+            0: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.MixUp(self.default_dataset, alpha=alpha1),
+                A.MixUp(self.default_dataset, alpha=alpha2)
+            ])
+        }
+        return exp
+    
+    def mixup_basic(self, alpha=1, sharpness_factor=2):
+        exp = {
+            0: A.Compose(Experiment.init_transform + [
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.MixUp(self.default_dataset, alpha=alpha),
+                
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor)
+            ])
+        }
+        return exp
