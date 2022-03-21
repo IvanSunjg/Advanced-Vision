@@ -95,6 +95,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
+                print(f'Saving checkpoint for epoch {epoch}...')
                 torch.save(model.state_dict(), f'{path}/{exp_type}-{job_id}.pth')
             # best_model_wts = copy.deepcopy(model.state_dict())
 
