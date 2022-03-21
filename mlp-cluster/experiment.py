@@ -325,7 +325,21 @@ class Experiment():
                 transforms.Resize(256),
                 transforms.RandomCrop(224),
 
-                A.MixUp(alpha=alpha)
+                A.MixUp(dataset=self.default_dataset, alpha=alpha)
+            ])
+        }
+        return exp
+    
+    def cutout_mixup(self, n_holes=3, length=50, alpha=1):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.CutOut(n_holes=n_holes, length=length),
+                A.MixUp(dataset=self.default_dataset, alpha=alpha)
             ])
         }
         return exp
