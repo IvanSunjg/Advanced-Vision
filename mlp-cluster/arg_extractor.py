@@ -33,17 +33,27 @@ def get_args():
 	###Loss function hyperparameters###
 	#Reduction to output in each batch should be 'mean' or 'sum' we only used 'mean' so far
 	#Reduction can be applied to both 'CEL' and 'KLD'
-	parser.add_argument('--reduction', nargs="?", type=str, default='mean')
+	#parser.add_argument('--reduction', nargs="?", type=str, default='mean')
 	#Label smoothing punishes the labels that classified accurately, should range[0.0,1.0]
 	#Label smoothing can only be applied to 'CEL'
-	parser.add_argument('--label_smoothing', nargs="?", type=float, default=0.0)
+	#parser.add_argument('--label_smoothing', nargs="?", type=float, default=0.0)
+
 	###Scheduler hyperparameters###
 	#learning rate is decreased at multiples of step size (epochs) i.e(7,14,21), with cutout techniques the best so far is 4
 	parser.add_argument('--step_size', nargs="?", type=int, default=7)
 	#decrease the learning rate at step size with gamma
 	parser.add_argument('--gamma', nargs="?", type=float, default=0.1)
+
 	###The number of resnet blocks to freeze, should be between[1,10]
 	parser.add_argument('--num_of_frozen_blocks', nargs="?", type=int, default=2)
+
+	###DataLoader arguments"
+	parser.add_argument('--num_workers', type=int, default=1)
+	parser.add_argument('--batch_size', type=int, default=64)
+
+	###Checkpoint arguments"
+	parser.add_argument('--job_id', type=str, default='1')
+	parser.add_argument('--checkpoint_file', type=str, default=None)
 
 	###Augmentation technique arguments###
 	parser.add_argument('--exp_type', type=str, required=True)

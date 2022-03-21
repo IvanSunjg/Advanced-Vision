@@ -95,6 +95,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
+                torch.save(model.state_dict(), f'{path}/{exp_type}-{job_id}.pth')
             # best_model_wts = copy.deepcopy(model.state_dict())
 
         print()
@@ -126,7 +127,12 @@ if __name__ == '__main__':
     #label_smoothing = args.label_smoothing
     step_size = args.step_size
     gamma = args.gamma
-    num_of_frozen_blocks = args.num_of_frozen_blocks 
+    num_of_frozen_blocks = args.num_of_frozen_blocks
+    batch_size = args.batch_size
+    num_workers = args.num_workers
+
+    checkpoint_file = args.checkpoint_file
+    job_id = args.job_id
 
     exp_type = args.exp_type
     exp_kwargs = args.exp_kwargs
@@ -149,7 +155,7 @@ if __name__ == '__main__':
     
     #dataloader shuffles both train and valid!!! image_datasets
     dataloaders = {
-        x: torch.utils.data.DataLoader(image_datasets[x], batch_size=64, shuffle=True, num_workers=1) 
+        x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, shuffle=True, num_workers=num_workers) 
         for x in ['train','val']
     }
                 
@@ -164,8 +170,11 @@ if __name__ == '__main__':
     model = models.resnet50(pretrained=False)
 
     #load checkpoint
-    #FILE = "/media/gabriel/24C755C11481A4EA/resnet50_fconv_model_best.pth.tar"
-    FILE = f'{path}/resnet50_fconv_model_best.pth.tar'
+    if checkpoint_file is None:
+        FILE = f'{path}/resnet50_fconv_model_best.pth.tar'
+    else:
+        FILE = f'{path}/{checkpoint_file}'
+    print(f'Loading {FILE}...')
     checkpoint = torch.load(FILE)
     #froze blocks
     ct = 0
