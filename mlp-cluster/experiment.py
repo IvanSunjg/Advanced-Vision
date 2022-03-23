@@ -343,3 +343,95 @@ class Experiment():
             ])
         }
         return exp
+    
+    def basic_mixup_then_autoaugment(self, n=5, sharpness_factor=2, alpha=1):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+                A.MixUp(self.default_dataset, alpha=alpha)
+            ]),
+            n: A.Compose([
+                transforms.AutoAugment(),
+
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224)
+            ])
+        }
+        return exp
+
+    def basic_mixup_then_autoaugment_mixup(self, n=10, sharpness_factor=2, alpha1=1, alpha2=1):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor),
+                A.MixUp(self.default_dataset, alpha=alpha1)
+            ]),
+            n: A.Compose([
+                transforms.AutoAugment(),
+
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.MixUp(self.default_dataset, alpha=alpha2)
+            ])
+        }
+        return exp
+
+    def basic_then_autoaugment(self, n=5, sharpness_factor=2):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor)
+            ]),
+            n: A.Compose([
+                transforms.AutoAugment(),
+
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224)
+            ])
+        }
+        return exp
+    
+    def basic_then_mixup(self, n=5, sharpness_factor=2, alpha=1):
+        exp = {
+            0: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAdjustSharpness(sharpness_factor=sharpness_factor)
+            ]),
+            n: A.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224),
+
+                A.MixUp(self.default_dataset, alpha=alpha)
+            ])
+        }
+        return exp
