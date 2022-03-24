@@ -6,28 +6,28 @@ from sklearn.model_selection import train_test_split
 from arg_extractor import get_args
 from torch.optim import lr_scheduler
 from torchvision import models, transforms, datasets
+from copy import copy, deepcopy
 import torch.nn as nn
 import torch.optim as optim
 import torch
 import time
 import experiment
 import os
-import copy
 
 #splits the train data to train and validation sets
 def train_val_dataset(dataset, val_split=0.2):
     train_idx, val_idx = train_test_split(list(range(len(dataset))), test_size=val_split)
     datasets = {}
-    
+
     datasets['train'] = Subset(dataset, train_idx)
     datasets['val'] = Subset(dataset, val_idx)
-    
+
     datasets['train'].dataset = copy(dataset)
     datasets['train'].dataset.transform = transforms.Compose([
     	transforms.ToTensor(),
     	transforms.Normalize(RESNET_MEAN, RESNET_STD)
     ])
-            
+
     datasets['val'].dataset.transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(RESNET_MEAN, RESNET_STD),
@@ -54,12 +54,12 @@ class TestDataset(datasets.VisionDataset):
     def __getitem__(self, idx):
         path, target = self.samples[idx]
         sample = datasets.folder.pil_loader(path)
-        
+
         if self.transform is not None:
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        
+
         return sample, target
 
     def __len__(self):
@@ -93,7 +93,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25, checkpoin
             running_corrects = 0
 
             # Iterate over data.
-            for inputs, labels in dataloaders[phase]:		
+            for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
 
@@ -130,15 +130,15 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25, checkpoin
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 print(f'Saving checkpoint for epoch {epoch}...')
-                best_model_wts = copy.deepcopy(model.state_dict())
+                best_model_wts = deepcopy(model.state_dict())
                 torch.save({
-                    'state_dict': best_model_wts, 
-                    #'optimizer': optimizer.state_dict(), 
+                    'state_dict': best_model_wts,
+                    #'optimizer': optimizer.state_dict(),
                     #'scheduler': scheduler.state_dict(),
-                    'epoch': epoch, 
+                    'epoch': epoch,
                     'acc': best_acc,
                     'time_elapsed': time.time() - since
-                }, 
+                },
                 f'{path}/{exp_type}-{job_id}.pth')
 
         print()
@@ -194,14 +194,14 @@ if __name__ == '__main__':
     print(len(image_datasets['train']) + len(image_datasets['val']) )
     print(len(image_datasets['train']))
     print(len(image_datasets['val']))
-    
+
     #dataloader shuffles both train and valid!!! image_datasets
     dataloaders = {
-        x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, shuffle=True, num_workers=num_workers) 
+        x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size, shuffle=True, num_workers=num_workers)
         for x in ['train','val']
     }
-                
-    #full dataset needed for training              
+
+    #full dataset needed for training
     dataset_sizes = {x: len(image_datasets[x]) for x in ['train','val']}
 
     #declaring the device
@@ -225,7 +225,7 @@ if __name__ == '__main__':
         if ct < num_of_frozen_blocks+1:
             for param in child.parameters():
                 param.requires_grad = False
-    #enables batch layers in frozen block			
+    #enables batch layers in frozen block
     for name, param in model.named_parameters():
         if 'bn' in name:
             param.requires_grad = True
@@ -237,7 +237,7 @@ if __name__ == '__main__':
         model.eval()
 
         test_dataset = TestDataset(
-            root=f'{path}/test', 
+            root=f'{path}/test',
             labels_file=f'{path}/ILSVRC2012_test_ground_truth.txt',
             transform=transforms.Compose([
                 transforms.ToTensor(),
@@ -253,7 +253,7 @@ if __name__ == '__main__':
             with torch.no_grad():
                 samples, labels = samples.cuda(), labels.cuda()
                 output = model(samples)
-                
+
                 # calculate accuracy
                 pred = torch.argmax(output, dim=1)
                 correct = pred.eq(labels)
