@@ -54,7 +54,7 @@ def get_args():
 	###Checkpoint arguments"
 	parser.add_argument('--job_id', type=str, default='1')
 	parser.add_argument('--checkpoint_file', type=str, default=None)
-	parser.add_argument('--perform_inference', type=bool, default=False)
+	parser.add_argument('--perform_inference', action='store_true')
 
 	###Augmentation technique arguments###
 	parser.add_argument('--exp_type', type=str, required=True)
