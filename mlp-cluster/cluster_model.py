@@ -4,7 +4,6 @@ from avgmentations.resnet_dataset import ResNetImageFolder, RESNET_MEAN, RESNET_
 from torch.utils.data import Subset
 from sklearn.model_selection import train_test_split
 from arg_extractor import get_args
-from copy import copy
 from torch.optim import lr_scheduler
 from torchvision import models, transforms, datasets
 import torch.nn as nn
@@ -13,6 +12,7 @@ import torch
 import time
 import experiment
 import os
+import copy
 
 #splits the train data to train and validation sets
 def train_val_dataset(dataset, val_split=0.2):
