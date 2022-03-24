@@ -247,4 +247,7 @@ if __name__ == '__main__':
         step_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
         model = model.to(device)
-        model = train_model(model, criterion, optimizer, step_lr_scheduler, num_epochs=num_epochs, checkpoint=checkpoint)
+        if checkpoint_file is None:
+            model = train_model(model, criterion, optimizer, step_lr_scheduler, num_epochs=num_epochs)
+        else:
+            model = train_model(model, criterion, optimizer, step_lr_scheduler, num_epochs=num_epochs, checkpoint=checkpoint)
