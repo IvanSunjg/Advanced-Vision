@@ -1,7 +1,7 @@
 #!/bin/bash
-fileid="1rYquR66zRKbFYuQPhaM39rMGxjTeBM_-"
-# filename="train.zip"
-# curl -c ./cookie -s -L "https://drive.google.com/uc?export=download&id=${fileid}" > /dev/null
-# curl -Lb ./cookie "https://drive.google.com/uc?export=download&confirm=`awk '/download/ {print $NF}' ./cookie`&id=${fileid}" -o ${filename}
 
+fileid="1rYquR66zRKbFYuQPhaM39rMGxjTeBM_-"
 gdown --id $fileid
+
+ground_truth_id="1DLHktcDnexdspk-6yGkyKxKlNHf2ctjn"
+gdown --id $ground_truth_id

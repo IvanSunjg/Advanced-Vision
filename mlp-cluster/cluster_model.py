@@ -1,17 +1,18 @@
 #imports
 from avgmentations import losses
 from avgmentations.resnet_dataset import ResNetImageFolder, RESNET_MEAN, RESNET_STD
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.optim import lr_scheduler
-from torchvision import models, transforms, datasets
-import time
 from torch.utils.data import Subset
 from sklearn.model_selection import train_test_split
 from arg_extractor import get_args
 from copy import copy
+from torch.optim import lr_scheduler
+from torchvision import models, transforms, datasets
+import torch.nn as nn
+import torch.optim as optim
+import torch
+import time
 import experiment
+import os
 
 #splits the train data to train and validation sets
 def train_val_dataset(dataset, val_split=0.2):
@@ -34,6 +35,35 @@ def train_val_dataset(dataset, val_split=0.2):
         transforms.CenterCrop(224),
     ])
     return datasets
+
+class TestDataset(datasets.VisionDataset):
+
+    def __init__(self, root, labels_file, transform=None, target_transform=None):
+        super().__init__(root=root, transform=transform, target_transform=target_transform)
+
+        paths = sorted(os.listdir(self.root))
+        paths = [f'{self.root}/{p}' for p in paths]
+        with open(os.path.expanduser(labels_file)) as f:
+            labels = f.read().splitlines()
+        labels = [int(l) for l in labels]
+        self.samples = list(zip(paths, labels))
+
+        self.transform = transform
+        self.target_transform = target_transform
+
+    def __getitem__(self, idx):
+        path, target = self.samples[idx]
+        sample = datasets.folder.pil_loader(path)
+        
+        if self.transform is not None:
+            sample = self.transform(sample)
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+        
+        return sample, target
+
+    def __len__(self):
+        return len(self.samples)
 
 #### TRAIN FUNCTION ####
 def train_model(model, criterion, optimizer, scheduler, num_epochs=25, checkpoint=None):
@@ -206,16 +236,17 @@ if __name__ == '__main__':
     if perform_inference: # Inference on Test Set
         model.eval()
 
-        test_dataset = datasets.ImageFolder(
-            root=f'{path}/test',
+        test_dataset = TestDataset(
+            root=f'{path}/test', 
+            labels_file=f'{path}/ILSVRC2012_test_ground_truth.txt',
             transform=transforms.Compose([
                 transforms.ToTensor(),
                 transforms.Normalize(RESNET_MEAN, RESNET_STD),
-                transforms.Resize(256),
+                transforms.Resize((256, 256)),
                 transforms.CenterCrop(224),
             ])
         )
-        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=True, num_workers=num_workers)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
         test_acc = 0.0
         for samples, labels in test_loader:
