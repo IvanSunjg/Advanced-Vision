@@ -7,7 +7,7 @@ from .resnet_dataset import RESNET_MEAN, RESNET_STD
 
 def imshow(inp, title='untitled', norm=True):
     """Imshow for Tensor Images."""
-    
+
     inp = inp.numpy().transpose((1, 2, 0))
     if norm:
         inp = RESNET_STD * inp + RESNET_MEAN
@@ -56,7 +56,7 @@ def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2, level=3):
         elif aug == "autocontrast":
             new_image = transforms.functional.autocontrast(img)
         elif aug == "rotate":
-            # small rotation degree in order to keep the image from being destroyed 
+            # small rotation degree in order to keep the image from being destroyed
             new_image = transforms.functional.rotate(img, np.random.randint(-10 * level, 10 * level))
         elif aug == "translate_x":
             new_image = transforms.functional.affine(img, translate=(np.random.uniform(-10 * level, 10 * level), 0), angle=0, scale=1, shear=0)
@@ -74,13 +74,13 @@ def augmix(img, k=3, w=[0.2, 0.3, 0.5], m=0.2, level=3):
         mixed += torch.mul(images[i], w[i])
 
     miximg = torch.mul(mixed, 1 - m) + torch.mul(img, m)
-    
+
     return miximg
 
 def cutout(img, n_holes, length):
     height = img.size(1)
     width = img.size(2)
-    
+
     mask = np.ones((height, width), np.float32)
 
     for _ in range(n_holes):
@@ -103,7 +103,7 @@ def cutout(img, n_holes, length):
 def gridmask(img):
     height = img.size(1)
     width = img.size(2)
-    
+
     mask = np.ones((height, width), np.float32)
 
     y = np.random.randint(height // 2)
@@ -113,7 +113,7 @@ def gridmask(img):
     x_length = np.random.randint(x, width // 2)
 
     mask[y:y_length, x:x_length] = 0.
-    mask[y + height // 2:y_length + height // 2, x:x_length] = 0.    
+    mask[y + height // 2:y_length + height // 2, x:x_length] = 0.
     mask[y:y_length, x + width // 2:x_length + width // 2] = 0.
     mask[y + height // 2:y_length + height // 2, x + width // 2:x_length + width // 2] = 0.
 
@@ -123,7 +123,7 @@ def gridmask(img):
 
     return img
 
-def mixup(image1, label1, image2, label2, alpha=0.2, min_lam=0.3, max_lam=0.7):
+def mixup(image1, label1, image2, label2, alpha=2, min_lam=0, max_lam=1):
     # Select a random number from the given beta distribution
     # Mixup the images accordingly
     alpha = 0.2
@@ -133,41 +133,30 @@ def mixup(image1, label1, image2, label2, alpha=0.2, min_lam=0.3, max_lam=0.7):
 
     return mixup_image, mixup_label
 
-def rand_bbox(h, w, lam):
-    """
-    Generate random bounding box 
+def rand_bbox(H, W, lam):
+    cut_rat = np.sqrt(1. - lam)
+    cut_w = np.int(W * cut_rat)
+    cut_h = np.int(H * cut_rat)
 
-    Args:
-        - h: height of the bounding box
-        - w: width of the bounding box
-        - lam: (lambda) cut ratio parameter
+    # uniform
+    cx = np.random.randint(W)
+    cy = np.random.randint(H)
 
-    Returns:
-        - Bounding box as 4-tuple
-    """
-    lam = 1. - lam
-    cut_w = int(np.sqrt(lam * w * h))
-    cut_h = int(np.sqrt(lam * w * h))
-
-    # TODO discuss keeping this box behavior bc the box spills over the edge of the image
-    cx = np.random.randint(w)
-    cy = np.random.randint(h)
-
-    bbx1 = np.clip(cx - cut_w // 2, 0, w)
-    bby1 = np.clip(cy - cut_h // 2, 0, h)
-    bbx2 = np.clip(cx + cut_w // 2, 0, w)
-    bby2 = np.clip(cy + cut_h // 2, 0, h)
+    bbx1 = np.clip(cx - cut_w // 2, 0, W)
+    bby1 = np.clip(cy - cut_h // 2, 0, H)
+    bbx2 = np.clip(cx + cut_w // 2, 0, W)
+    bby2 = np.clip(cy + cut_h // 2, 0, H)
 
     return bbx1, bby1, bbx2, bby2
 
-def cutmix(image1, label1, image2, label2, alpha=0.2, min_lam=0, max_lam=1):
+def cutmix(image1, label1, image2, label2, alpha=2, min_lam=0, max_lam=1):
     lam = np.clip(np.random.beta(alpha, alpha), min_lam, max_lam)
     h, w = image1.shape[1:]
     bbx1, bby1, bbx2, bby2 = rand_bbox(h, w, lam)
 
     cutmix_image = image1
     cutmix_image[:, bbx1:bbx2, bby1:bby2] = image2[:, bbx1:bbx2, bby1:bby2]
-    
+
     # adjust lambda to exactly match pixel ratio
     lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1)) / (w * h)
     cutmix_label = label1 * lam + label2 * (1. - lam)
