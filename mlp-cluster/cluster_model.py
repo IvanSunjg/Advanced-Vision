@@ -150,6 +150,33 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25, checkpoin
 
     return model
 
+def infer(model):
+    model.eval()
+
+    test_dataset = TestDataset(
+        root=f'{path}/test',
+        labels_file=f'{path}/ILSVRC2012_test_ground_truth.txt',
+        transform=transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(RESNET_MEAN, RESNET_STD),
+            transforms.Resize((256, 256)),
+            transforms.CenterCrop(224),
+        ])
+    )
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+
+    test_acc = 0.0
+    for samples, labels in test_loader:
+        with torch.no_grad():
+            samples, labels = samples.cuda(), labels.cuda()
+            output = model(samples)
+
+            # calculate accuracy
+            pred = torch.argmax(output, dim=1)
+            correct = pred.eq(labels)
+            test_acc += torch.mean(correct.float())
+    print(f'Accuracy of the network on {len(test_dataset)} test images: {test_acc.item() / len(test_loader)}')
+
 if __name__ == '__main__':
     ###command line rguments###
     args = get_args()
@@ -231,35 +258,11 @@ if __name__ == '__main__':
             param.requires_grad = True
 
     model = nn.DataParallel(model)
+    model = model.to(device)
     model.load_state_dict(checkpoint['state_dict'])
 
     if perform_inference: # Inference on Test Set
-        model.eval()
-
-        test_dataset = TestDataset(
-            root=f'{path}/test',
-            labels_file=f'{path}/ILSVRC2012_test_ground_truth.txt',
-            transform=transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize(RESNET_MEAN, RESNET_STD),
-                transforms.Resize((256, 256)),
-                transforms.CenterCrop(224),
-            ])
-        )
-        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-
-        test_acc = 0.0
-        for samples, labels in test_loader:
-            with torch.no_grad():
-                samples, labels = samples.cuda(), labels.cuda()
-                output = model(samples)
-
-                # calculate accuracy
-                pred = torch.argmax(output, dim=1)
-                correct = pred.eq(labels)
-                test_acc += torch.mean(correct.float())
-        print(f'Accuracy of the network on {len(test_dataset)} test images: {test_acc.item() / len(test_loader)}')
-
+        infer(model)
     else:
         criterion = losses.CrossEntropyLoss()
         if loss_function == 'BCE':
@@ -277,7 +280,6 @@ if __name__ == '__main__':
 
         step_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
-        model = model.to(device)
         if checkpoint_file is None:
             model = train_model(model, criterion, optimizer, step_lr_scheduler, num_epochs=num_epochs)
         else:

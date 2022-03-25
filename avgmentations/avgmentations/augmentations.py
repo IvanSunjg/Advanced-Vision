@@ -3,10 +3,10 @@ from torchvision import transforms
 from . import utils
 
 class OneHot():
-    
+
     def __init__(self, n_classes):
         self.n_classes = n_classes
-    
+
     def __call__(self, target):
         return utils.one_hot(target, self.n_classes)
 
@@ -26,7 +26,7 @@ def apply_transform(t, img, label=None):
         img, label = t(img, label)
     else:
         img = t(img)
-    
+
     return img, label
 
 class Compose(ItemTransform, transforms.Compose):
@@ -39,7 +39,7 @@ class Compose(ItemTransform, transforms.Compose):
     def __call__(self, img, label):
         for t in self.transforms:
             img, label = apply_transform(t, img, label)
-            
+
         return img, label
 
 class Double():
@@ -50,7 +50,7 @@ class Double():
     def __call__(self, img):
         img = utils.double(img, self.spread)
         return img
-    
+
     def __repr__(self):
         return self.__class__.__name__ + f'(spread={self.spread})'
 
@@ -66,7 +66,7 @@ class CutOut():
     def __init__(self, n_holes, length):
         self.n_holes = n_holes
         self.length = length
-    
+
     def __call__(self, img):
 
         """
@@ -78,7 +78,7 @@ class CutOut():
 
         img = utils.cutout(img, self.n_holes, self.length)
         return img
-    
+
     def __repr__(self):
         return self.__class__.__name__ + f'(n_holes={self.n_holes}, length={self.length})'
 
@@ -105,7 +105,7 @@ class GridMask():
 
         img = utils.gridmask(img)
         return img
-    
+
     def __repr__(self):
         return self.__class__.__name__ + '()'
 
@@ -139,7 +139,7 @@ class AugMix():
         # TODO could modify different augmentation method hyperparameters
         miximg = utils.augmix(img, k=self.k, w=self.w, m=self.m, level=self.level)
         return miximg
-    
+
     def __repr__(self):
         return self.__class__.__name__ + f'(k={self.k}, w={self.w}, m={self.m}, level={self.level})'
 
@@ -159,7 +159,7 @@ class OneOf(ItemTransform):
         t = np.random.choice(self.transforms, p=self.p)
         img, label = apply_transform(t, img, label)
         return img, label
-    
+
     def __repr__(self):
         format_string = self.__class__.__name__ + '('
         tp = zip(self.transforms, self.p) if self.p is not None else self.transforms
@@ -178,16 +178,16 @@ class P(ItemTransform):
     def __init__(self, transform, p):
         self.transform = transform
         self.p = p
-    
+
     def __call__(self, img, label):
         if np.random.rand() < self.p:
             return apply_transform(self.transform, img, label)
         return img, label
-    
+
     def __repr__(self):
         return self.__class__.__name__ + f'({self.transform}, {self.p})'
 
-class Mix():
+class _Mix():
 
     '''
     Superclass for transformations that require image mixing.
@@ -195,14 +195,14 @@ class Mix():
 
     def __init__(self, dataset):
         self.dataset = dataset
-    
+
     def get_mix_item(self):
         mix_idx = np.random.randint(len(self.dataset))
         mix_image, mix_target = self.dataset[mix_idx]
 
         return mix_image, mix_target
 
-class MixUp(Mix, ItemTransform):
+class MixUp(_Mix, ItemTransform):
 
     def __init__(self, dataset, alpha=0.2, min_lam=0.3, max_lam=0.7):
         super().__init__(dataset)
@@ -216,11 +216,11 @@ class MixUp(Mix, ItemTransform):
         img, label = utils.mixup(img, label, mix_image, mix_label, alpha=self.alpha, min_lam=self.min_lam, max_lam=self.max_lam)
 
         return img, label
-    
+
     def __repr__(self):
         return self.__class__.__name__ + f'(alpha={self.alpha}, min_lam={self.min_lam}, max_lam={self.max_lam})'
 
-class CutMix(Mix, ItemTransform):
+class CutMix(_Mix, ItemTransform):
 
     def __init__(self, dataset, alpha=0.2, min_lam=0.3, max_lam=0.7):
         super().__init__(dataset)
@@ -234,6 +234,6 @@ class CutMix(Mix, ItemTransform):
         img, label = utils.cutmix(img, label, mix_image, mix_label, alpha=self.alpha, min_lam=self.min_lam, max_lam=self.max_lam)
 
         return img, label
-    
+
     def __repr__(self):
         return self.__class__.__name__ + f'(alpha={self.alpha}, min_lam={self.min_lam}, max_lam={self.max_lam})'
