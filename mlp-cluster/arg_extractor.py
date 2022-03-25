@@ -1,7 +1,7 @@
 import argparse
 import ast
 
-def get_args():	
+def get_args():
 
 	parser = argparse.ArgumentParser(
         description='Welcome to the MLP cluster\'s Pytorch training and inference helper script')
@@ -57,9 +57,9 @@ def get_args():
 	parser.add_argument('--perform_inference', action='store_true')
 
 	###Augmentation technique arguments###
-	parser.add_argument('--exp_type', type=str, required=True)
+	parser.add_argument('--exp_type', type=str, default='default')
 	parser.add_argument('--exp_kwargs', type=lambda x: ast.literal_eval(x), default={})
-	
+
 	args = parser.parse_args()
-	
+
 	return args

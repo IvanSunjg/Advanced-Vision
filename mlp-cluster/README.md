@@ -127,12 +127,15 @@ We have built a workflow that allows us to very easily share and run experiments
             ```
 
         2. **Training Hyperparameters**: To specify the model training hyperparameters, you can use the flags defined in [`arg_extractor.py`](arg_extractor.py). These can be used to specify the learning rate, step size, gamma, weight decay, loss function, etc.
+        3. **Saving Checkpoints**: By default, the best performing epoch's model will be saved. The `--job_id` flag can be used to differentiate between different experiment checkpoint files. By default, the value of `--job_id` will be 1 and the name of the checkpoint file will be saved as `{exp_type}-{job_id}.pth`. For example, if you were to run the AugMix experiment using `--exp_type augmix` with `--job_id 2`, the saved checkpoint file will be `augmix-2.pth`. Using the checkpoint file will be discussed later.
 
         All together, you can run specified experiments using supplied training hyperparameters with `bash send_model_to_job.sh` and the relevant flags as explained above. This will send the experiment to the Slurm cluster and start it automatically. For example, to send the `AugMix` and `CutOut` example experiment with a learning rate of 0.1 to Slurm, you can run the following:
 
         ```bash
         bash send_model_to_job.sh --exp_type augmix_cutout --exp_kwargs "{'k': 3, 'n_holes': 2, 'length': 80}" --lr 0.1
         ```
+
+        This will also output `augmix_cutout-1.pth` as a checkpoint file, saving the experiment's best performing epoch's data.
 
 6. Interpret Output and Errors
     1. When you have successfully submitted an experiment job, you will be supplied with `job_id` which you can also find using `squeue -u $USER` to view your job's info. The output of the job will be directed to `slurm-{job_id}.out` and the errors of the job will be directed to `slurm-{job_id}.err`.
@@ -147,5 +150,19 @@ We have built a workflow that allows us to very easily share and run experiments
     * The first line of the output file will show which experiment type and experiment keyword arguments were used. The second line should print all of the hyperparameter and flag values as designated by our [argument extractor](arg_extractor.py).
 7. Share Experiments for Others to Run
     * Some experiments, such as `MixUp` and `CutMix`, will take longer than others to run and so having multiple people testing the same base experiment but with different hyperparameters in parallel will be very beneficial. Using this framework, this can be done by just sending a colleague the `--exp_type` and `--exp_kwargs` flags and syncing on what hyperparameters you guys would like to test in parallel.
+8. Using a Checkpoint File
+    1. Continue Training from a Checkpoint File
+        * To continue running an experiment from a checkpoint, use the `--checkpoint_file` flag and provide the checkpoint file that was saved when running a previous experiment. You will also still have to provide relevant the `--exp_type`, `--exp_kwargs`, and training hyperparameters. By providing these, the experiment will continue running from the epoch that the checkpoint left off at, using the saved weights. For example, if you had run an AugMix experiment with `k=3` and `lr=0.01` and saved a checkpoint file named `augmix-1.pth`, then you can continue the training by running the following:
+
+        ```bash
+        bash send_model_to_job.sh --exp_type augmix --exp_kwargs "{'k': 3}" --lr 0.01 --checkpoint_file augmix-1.pth
+        ```
+
+    2. Perform Inference
+        * To check the performance of a saved model/checkpoint on the test set, you only need the `--checkpoint_file` and `--perform_inference` flags. The `--checkpoint_file` flag expects the path to the checkpoint file and `--perform_inference` just needs to be provided to let the job know you would like to perform inference. For example, if you had run an AugMix experiment and saved a checkpoint file named `augmix-1.pth`, then you can check its performance on the test set by running the following:
+
+        ```bash
+        bash send_model_to_job.sh --checkpoint_file augmix-1.pth --perform_inference
+        ```
 
 Hopefully this helps provide insight into how to submit experiments using our new workflow :)
