@@ -1,0 +1,73 @@
+mixup {'alpha': 2}
+Namespace(amsgrad=False, batch_size=64, beta1=0.9, beta2=0.999, checkpoint_file=None, exp_kwargs={'alpha': 2}, exp_type='mixup', gamma=0.1, job_id='1', loss_function='CEL', lr=0.01, momentum=0.5, num_epochs=15, num_of_frozen_blocks=2, num_workers=1, optimizer_type='SGD', path='/home/s1870157/Advanced-Vision/mlp-cluster', step_size=7, weight_decay=0.006)
+50000
+40000
+10000
+Loading /home/s1870157/Advanced-Vision/mlp-cluster/resnet50_fconv_model_best.pth.tar...
+Epoch 0/14
+----------
+train Loss: 4.8076 Acc: 0.2213
+val Loss: 3.2967 Acc: 0.3101
+Saving checkpoint for epoch 0...
+
+Epoch 1/14
+----------
+train Loss: 4.0260 Acc: 0.2719
+val Loss: 3.1340 Acc: 0.3361
+Saving checkpoint for epoch 1...
+
+Epoch 2/14
+----------
+train Loss: 3.8618 Acc: 0.2977
+val Loss: 3.0264 Acc: 0.3503
+Saving checkpoint for epoch 2...
+
+Epoch 3/14
+----------
+train Loss: 3.7902 Acc: 0.3114
+val Loss: 2.9462 Acc: 0.3665
+Saving checkpoint for epoch 3...
+
+Epoch 4/14
+----------
+train Loss: 3.6976 Acc: 0.3260
+val Loss: 2.9464 Acc: 0.3620
+
+Epoch 5/14
+----------
+train Loss: 3.6326 Acc: 0.3390
+val Loss: 2.8804 Acc: 0.3763
+Saving checkpoint for epoch 5...
+
+Epoch 6/14
+----------
+train Loss: 3.6014 Acc: 0.3482
+val Loss: 2.8741 Acc: 0.3823
+Saving checkpoint for epoch 6...
+
+Epoch 7/14
+----------
+train Loss: 3.4507 Acc: 0.3831
+val Loss: 2.5515 Acc: 0.4464
+Saving checkpoint for epoch 7...
+
+Epoch 8/14
+----------
+train Loss: 3.3865 Acc: 0.3988
+val Loss: 2.5067 Acc: 0.4563
+Saving checkpoint for epoch 8...
+
+Epoch 9/14
+----------
+train Loss: 3.3712 Acc: 0.4042
+val Loss: 2.4833 Acc: 0.4585
+Saving checkpoint for epoch 9...
+
+Epoch 10/14
+----------
+train Loss: 3.3726 Acc: 0.4064
+val Loss: 2.4700 Acc: 0.4664
+Saving checkpoint for epoch 10...
+
+Epoch 11/14
+----------

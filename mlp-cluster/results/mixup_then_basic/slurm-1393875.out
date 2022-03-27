@@ -1,0 +1,95 @@
+mixup_then_basic {'stop_point': 5, 'alpha': 2}
+Namespace(amsgrad=False, batch_size=64, beta1=0.9, beta2=0.999, checkpoint_file=None, exp_kwargs={'stop_point': 5, 'alpha': 2}, exp_type='mixup_then_basic', gamma=0.1, job_id='2', loss_function='CEL', lr=0.01, momentum=0.5, num_epochs=15, num_of_frozen_blocks=2, num_workers=1, optimizer_type='SGD', path='/home/s1870157/Advanced-Vision/mlp-cluster', step_size=7, weight_decay=0.006)
+50000
+40000
+10000
+Loading /home/s1870157/Advanced-Vision/mlp-cluster/resnet50_fconv_model_best.pth.tar...
+Epoch 0/14
+----------
+train Loss: 4.8086 Acc: 0.2207
+val Loss: 3.2342 Acc: 0.3152
+Saving checkpoint for epoch 0...
+
+Epoch 1/14
+----------
+train Loss: 4.0120 Acc: 0.2741
+val Loss: 3.1244 Acc: 0.3248
+Saving checkpoint for epoch 1...
+
+Epoch 2/14
+----------
+train Loss: 3.8840 Acc: 0.2919
+val Loss: 3.0310 Acc: 0.3420
+Saving checkpoint for epoch 2...
+
+Epoch 3/14
+----------
+train Loss: 3.7718 Acc: 0.3093
+val Loss: 2.9395 Acc: 0.3554
+Saving checkpoint for epoch 3...
+
+Epoch 4/14
+----------
+train Loss: 3.6940 Acc: 0.3259
+val Loss: 2.9252 Acc: 0.3648
+Saving checkpoint for epoch 4...
+
+Epoch 5/14
+----------
+train Loss: 3.6478 Acc: 0.2588
+val Loss: 3.2060 Acc: 0.3126
+
+Epoch 6/14
+----------
+train Loss: 3.5127 Acc: 0.2737
+val Loss: 3.1604 Acc: 0.3163
+
+Epoch 7/14
+----------
+train Loss: 3.2555 Acc: 0.3216
+val Loss: 2.8671 Acc: 0.3646
+
+Epoch 8/14
+----------
+train Loss: 3.1874 Acc: 0.3351
+val Loss: 2.8473 Acc: 0.3712
+Saving checkpoint for epoch 8...
+
+Epoch 9/14
+----------
+train Loss: 3.1652 Acc: 0.3432
+val Loss: 2.8440 Acc: 0.3731
+Saving checkpoint for epoch 9...
+
+Epoch 10/14
+----------
+train Loss: 3.1533 Acc: 0.3416
+val Loss: 2.8401 Acc: 0.3742
+Saving checkpoint for epoch 10...
+
+Epoch 11/14
+----------
+train Loss: 3.1358 Acc: 0.3458
+val Loss: 2.8387 Acc: 0.3750
+Saving checkpoint for epoch 11...
+
+Epoch 12/14
+----------
+train Loss: 3.1307 Acc: 0.3469
+val Loss: 2.8297 Acc: 0.3761
+Saving checkpoint for epoch 12...
+
+Epoch 13/14
+----------
+train Loss: 3.1065 Acc: 0.3540
+val Loss: 2.8325 Acc: 0.3772
+Saving checkpoint for epoch 13...
+
+Epoch 14/14
+----------
+train Loss: 3.0703 Acc: 0.3607
+val Loss: 2.8263 Acc: 0.3793
+Saving checkpoint for epoch 14...
+
+Training complete in 443m 23s
+Best val Acc: 0.379300

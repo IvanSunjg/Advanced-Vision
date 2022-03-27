@@ -22,6 +22,17 @@ class Experiment():
             print(f'{exp_type} {exp_kwargs}')
         return getattr(self, exp_type)(**exp_kwargs)
 
+    def default(self):
+        exp = {
+            0: transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(RESNET_MEAN, RESNET_STD),
+                transforms.Resize(256),
+                transforms.RandomCrop(224)
+            ])
+        }
+        return exp
+
     def basic(self, sharpness_factor=2):
         exp = {
             0: A.Compose([

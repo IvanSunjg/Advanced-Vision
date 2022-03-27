@@ -14,4 +14,5 @@ resnet50_fconv_model_best.pth.tar
 mlp-cluster/*.out
 *.err
 *.pth
+ILSVRC2012_test_ground_truth.txt
 cookie

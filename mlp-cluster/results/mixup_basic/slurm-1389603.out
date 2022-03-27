@@ -1,0 +1,57 @@
+mixup_basic {'alpha': 2}
+Namespace(amsgrad=False, beta1=0.9, beta2=0.999, exp_kwargs={'alpha': 2}, exp_type='mixup_basic', gamma=0.1, label_smoothing=0.0, loss_function='CEL', lr=0.01, momentum=0.5, num_epochs=15, num_of_frozen_blocks=2, optimizer_type='SGD', path='/home/s1870157/Advanced-Vision/mlp-cluster', reduction='mean', step_size=7, weight_decay=0.006)
+50000
+40000
+10000
+Epoch 0/14
+----------
+train Loss: 6.3783 Acc: 0.0995
+val Loss: 3.9166 Acc: 0.2229
+
+Epoch 1/14
+----------
+train Loss: 5.6081 Acc: 0.1408
+val Loss: 3.8653 Acc: 0.2370
+
+Epoch 2/14
+----------
+train Loss: 5.5134 Acc: 0.1573
+val Loss: 3.7705 Acc: 0.2536
+
+Epoch 3/14
+----------
+train Loss: 5.4548 Acc: 0.1662
+val Loss: 3.7003 Acc: 0.2562
+
+Epoch 4/14
+----------
+train Loss: 5.4148 Acc: 0.1750
+val Loss: 3.6403 Acc: 0.2727
+
+Epoch 5/14
+----------
+train Loss: 5.3908 Acc: 0.1801
+val Loss: 3.7001 Acc: 0.2679
+
+Epoch 6/14
+----------
+train Loss: 5.3425 Acc: 0.1893
+val Loss: 3.6275 Acc: 0.2747
+
+Epoch 7/14
+----------
+train Loss: 5.2827 Acc: 0.2041
+val Loss: 3.4939 Acc: 0.2962
+
+Epoch 8/14
+----------
+train Loss: 5.2528 Acc: 0.2081
+val Loss: 3.4740 Acc: 0.3009
+
+Epoch 9/14
+----------
+train Loss: 5.2451 Acc: 0.2120
+val Loss: 3.4666 Acc: 0.3027
+
+Epoch 10/14
+----------
