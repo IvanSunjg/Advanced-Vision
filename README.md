@@ -11,4 +11,4 @@ For image classification, we were restricted to using ResNet50 as an immutable b
 * colab
   * Our Google Colab and Jupyter Notebook workflow. Most of this work can be found in `colab/examples.ipynb`
 * mlp-cluster
-  * Our MLP Cluster workflow, using the school's cluster instead of Google Colab as the free version of Google Colab was very restricting. This is where most of our work can be found.
+  * Our MLP Cluster workflow, using the school's cluster instead of Google Colab as the free version of Google Colab was very restricting. This is where most of our experiment related and model training work can be found.
