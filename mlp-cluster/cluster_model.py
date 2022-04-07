@@ -159,7 +159,7 @@ def infer(model):
         transform=transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(RESNET_MEAN, RESNET_STD),
-            transforms.Resize((256, 256)),
+            transforms.Resize(256),
             transforms.CenterCrop(224),
         ])
     )

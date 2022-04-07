@@ -1,0 +1,7 @@
+default {}
+Namespace(amsgrad=False, batch_size=64, beta1=0.9, beta2=0.999, checkpoint_file='default-1.pth', exp_kwargs={}, exp_type='default', gamma=0.1, job_id='1', loss_function='CEL', lr=0.006, momentum=0.5, num_epochs=15, num_of_frozen_blocks=2, num_workers=1, optimizer_type='SGD', path='/home/s1870157/Advanced-Vision/mlp-cluster', perform_inference=True, step_size=7, weight_decay=0.006)
+50000
+40000
+10000
+Loading /home/s1870157/Advanced-Vision/mlp-cluster/default-1.pth...
+Accuracy of the network on 50000 test images: 0.33012308184143224
